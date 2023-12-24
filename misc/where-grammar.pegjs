@@ -2,10 +2,12 @@
 // L_OR(L_OP(">", "*B", 1), L_OP("=", "*A", "Bob"))
 // ('*B' > 1) OR ('*A' = 'Bob')
 // *A = 'Bob'
+// *B = TRUE
+// 5 > 3 AND *B = 'Bob'
 
 Exp
-  = head:SingleExp _ op:ComboOperator _ tail:SingleExp {
-    return {type: op, op1: head, op2: tail}
+  = head:SingleExp _ op:ComboOperator _ tail:Exp {
+  	return {type: op, op1: head, op2: tail}
   }
   / SingleExp
 
@@ -18,10 +20,15 @@ UnitExp
   = Integer
   / Text
   / Column
+  / Boolean
+
+Boolean
+  = "TRUE" { return true}
+  / "FALSE" { return false}
 
 BaseExp
   = head:UnitExp _ op:CompareOperator _ tail:UnitExp {
-    return {type: 'BASE', op, col1: head, col2: tail}
+  	return {type: 'BASE', op, col1: head, col2: tail}
   }
 
 CompareOperator
@@ -44,5 +51,5 @@ Column
 
 Text
   = "'" str:[A-Za-z\s* ]+ "'" {
-    return str.join('')
+  	return str.join('')
   }
