@@ -2,8 +2,8 @@
 
 SQL like functionaliity in google sheet
 - LEFT_JOIN
-- SELECT2
-- WHERE2
+- SELECT
+- WHERE
 - ORDER_BY
 - GROUP_BY
 
@@ -22,3 +22,13 @@ We're using https://pegjs.org/online to generate the parser code for where claus
 
 Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=PeggyJS.peggy-language) for syntax highlighting for .pegjs files
 
+# TODO
+[x] grammar
+    [ ] relax strict need of parenthesis in AND/OR where expressions e.g `(*A=2) AND (*B='X')`, this is also allowed `*A=2 AND B='X`
+    [ ] support TRUE/FALSE
+[ ] TODO write a nice read me
+[ ] TODO write this in typescript
+[ ] TODO write function doc (for each exposed functions)
+    [ ] what to expose - WHERE2, SELECT2, GROUP_BY, SORT_BY, LEFT_JOIN, L_PARSE
+    [ ] and make others private
+[ ] TODO support basic function calls in SELECT e.g SELECT A > 2
