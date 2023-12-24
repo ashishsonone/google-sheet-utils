@@ -20,4 +20,5 @@ SQL like functionaliity in google sheet
 We're using https://pegjs.org/online to generate the parser code for where clause expressions like
 `(5 > 3) AND ('*C' = 'Bangalore Cookies')` or `*A = 'Bob'`
 
+Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=PeggyJS.peggy-language) for syntax highlighting for .pegjs files
 
