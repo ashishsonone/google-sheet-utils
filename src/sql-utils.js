@@ -155,15 +155,15 @@ function parseSelectionStr(selectionStr) {
   return outColumns
 }
 
-// "A.Name,B,C.Count of Cities"
+// "*A.Name,*B,*C.Count of Cities"
 // => [{index:0, name: "Name"}, {index: 1, name: 'B'}, {index: 3, name: 'Count of Cities'}]
 function parseSelectV2String(selectionV2Str, headerT) {
   const firstHeaderRow = headerT && headerT[0] || null
 
   const selectionStrList = selectionV2Str.split(',')
   const selList = selectionStrList.map((x) => {
-    const tokens = x.split('.')
-    const colName = tokens[0].toUpperCase()
+    const tokens = x.trim().split('.')
+    const colName = tokens[0].toUpperCase().slice(1) // removing the asterisk
     const colIndex = parseColumnIntoIndex(colName)
     const providedName = tokens[1] || null
     const headerName = firstHeaderRow && firstHeaderRow[colIndex] || null
@@ -244,7 +244,7 @@ we'll use the first matching entry in table2(e.g company) for the pk specified (
 e.g LEFT_JOIN(SheetA!A1:C3, "B", A2:C9, "A", 1)
 
 OR use with SELECT
-=SELECT(LEFT_JOIN(Employees!A1:C5, "B", A1:C3, "A", 1), "A,C,E")
+=SELECT(LEFT_JOIN(Employees!A1:C5, "B", A1:C3, "A", 1), "*A,*C,*E")
 */
 function LEFT_JOIN(table1, pk1ColName, table2, pk2ColName, _hCount) {
   const hCount = getWorkingHeaderCount(_hCount)
@@ -300,12 +300,12 @@ function _SELECT_OLD(table, selectionStr){
  * @return {Table} Output Table.
  * @customfunction
  * 
- * =SELECT(GROUP_BY(Sheet3!A1:Z100, "*H", "COUNT *A"), "A,B.Count Of Videos")
- * =SELECT(GROUP_BY(ORDER_BY(C2:D24, "*B DESC,*A DESC"), "*B", "COUNT *A"), "A,B.No of Brands")
- * =SELECT(C2:D24, "A,B.Count of Videos")
+ * =SELECT(GROUP_BY(Sheet3!A1:Z100, "*H", "COUNT *A"), "*A,*B.Count Of Videos")
+ * =SELECT(GROUP_BY(ORDER_BY(C2:D24, "*B DESC,*A DESC"), "*B", "COUNT *A"), "*A,*B.No of Brands")
+ * =SELECT(C2:D24, "*A,*B.Count of Videos")
  *
  * // without headers available (headerCount=0)
- * =SELECT(C3:D24, "A,B.Count of Videos", 0)
+ * =SELECT(C3:D24, "*A,*B.Count of Videos", 0)
  */
 function SELECT(table, selectionV2Str, headerCount) {
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
