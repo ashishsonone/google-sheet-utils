@@ -75,7 +75,7 @@ post this we can combine `SELECT` OR `WHERE` to further tune the output
 3. Open Menu: Extensions -> Apps Script
 4. In Apps Script page
     - Click on "Editor" menu (on left). Create a new file and copy-paste the contents of `sheet-utils.combined.js`. Alternatively you could also upload the file using "+" button
-5. Now you can try out the functions in your google sheet cell e.g `=SELECT(WHERE(A1:C5, "*C > 25"), "A.My Name,C.My Age")`
+5. Now you can try out the functions in your google sheet cell e.g `=WHERE(A1:C5, "*C > 25")`
 
 # demo google sheet
 [Sheet Utils Demo Sheet](https://docs.google.com/spreadsheets/d/12xaK4kUavxLsKTN-yimtWjsoAlZacLruIlQkzW4W7CU/edit#gid=0)
