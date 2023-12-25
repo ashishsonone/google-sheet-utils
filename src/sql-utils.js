@@ -244,7 +244,7 @@ we'll use the first matching entry in table2(e.g company) for the pk specified (
 e.g LEFT_JOIN(SheetA!A1:C3, "B", A2:C9, "A", 1)
 
 OR use with SELECT
-=SELECT(LEFT_JOIN(Employees!A1:C5, "B", A1:C3, "A", 1), "A, C, E")
+=SELECT(LEFT_JOIN(Employees!A1:C5, "B", A1:C3, "A", 1), "A,C,E")
 */
 function LEFT_JOIN(table1, pk1ColName, table2, pk2ColName, _hCount) {
   const hCount = getWorkingHeaderCount(_hCount)
@@ -276,7 +276,7 @@ function LEFT_JOIN(table1, pk1ColName, table2, pk2ColName, _hCount) {
 /*
 =SELECT(E2:G6, "A, B")
 */
-function SELECT(table, selectionStr){
+function _SELECT_OLD(table, selectionStr){
   const outColumns = parseSelectionStr(selectionStr)
 
   const outTable = []
@@ -295,19 +295,19 @@ function SELECT(table, selectionStr){
  * Select v2 with rename option
  * 
  * @param {Table} table Selection Range as input table.
- * @param {String} selectionV2Str e.g "A|B.Count of Videos"
+ * @param {String} selectionV2Str e.g "A,B.Count of Videos"
  * @param {Integer} headerCount how many rows of headers in input table
  * @return {Table} Output Table.
  * @customfunction
  * 
- * =SELECT2(GROUP_BY(Sheet3!A1:Z100, "*H", "COUNT *A"), "A,B.Count Of Videos")
- * =SELECT2(GROUP_BY(ORDER_BY(C2:D24, "*B DESC,*A DESC"), "*B", "COUNT *A"), "A,B.No of Brands")
- * =SELECT2(C2:D24, "A,B.Count of Videos")
+ * =SELECT(GROUP_BY(Sheet3!A1:Z100, "*H", "COUNT *A"), "A,B.Count Of Videos")
+ * =SELECT(GROUP_BY(ORDER_BY(C2:D24, "*B DESC,*A DESC"), "*B", "COUNT *A"), "A,B.No of Brands")
+ * =SELECT(C2:D24, "A,B.Count of Videos")
  *
  * // without headers available (headerCount=0)
- * =SELECT2(C3:D24, "A,B.Count of Videos", 0)
+ * =SELECT(C3:D24, "A,B.Count of Videos", 0)
  */
-function SELECT2(table, selectionV2Str, headerCount) {
+function SELECT(table, selectionV2Str, headerCount) {
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
 
   const outColList = parseSelectV2String(selectionV2Str, headerT)
@@ -337,11 +337,11 @@ function SELECT2(table, selectionV2Str, headerCount) {
  * @customfunction
  * 
  * e.g
- * =SELECT(WHERE(E2:H6, "<", "*D", 4, 1), "A, D")
+ * =SELECT(WHERE(E2:H6, "<", "*D", 4, 1), "A,D")
  * =WHERE(E2:I6, "=", "*E", TRUE)
  */
 
-function WHERE(table, op, col1, col2, headerCount) {
+function _WHERE_OLD(table, op, col1, col2, headerCount) {
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
   const fData = dataT.filter((row) => {
     return runOp(row, op, col1, col2)
@@ -350,7 +350,7 @@ function WHERE(table, op, col1, col2, headerCount) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - -
-//            OPERATOR FUNCTIONS for WHERE2
+//            OPERATOR FUNCTIONS for WHERE
 // - - - - - - - - - - - - - - - - - - - - -
 
 function runCompositeOp(opObject, row) {
@@ -392,9 +392,9 @@ function L_OR(op1, op2){
 }
 
 /* 
-= WHERE2(<range>, "(*C = 'Delhi') AND (*D > 10)"))
+= WHERE(<range>, "(*C = 'Delhi') AND (*D > 10)"))
 */
-function WHERE2(table, opHumanString, headerCount) {
+function WHERE(table, opHumanString, headerCount) {
   const opString = L_PARSE(opHumanString)
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
   const fData = dataT.filter((row) => {
@@ -578,32 +578,12 @@ function L_PARSE(expression) {
 
 function test() {
   const table = [['name', 'age'], ['Alice',2], ['Bob',4]]
-  // const out = WHERE(table, '=', '*B', 2)
-  // console.log(out)
 
-  const out2 = WHERE2(table, "(*B > 1) AND (*A = 'Bob')") // L_OR(L_OP(">", "*B", 1), L_OP("=", "*A", "Bob")))
+  const out2 = WHERE(table, "(*B > 1) AND (*A = 'Bob')") // L_OR(L_OP(">", "*B", 1), L_OP("=", "*A", "Bob")))
   console.log(out2)
 
-  const out3 = WHERE2(table, "*B>2") // L_OP(">", "*B", 2))
+  const out3 = WHERE(table, "*B>2") // L_OP(">", "*B", 2))
   console.log(out3)
-
-  // const op4 = JSON.stringify({
-  //  "type": "OR",
-  //  "op1": {
-  //     "type": "BASE",
-  //     "op": ">",
-  //     "col1": "*B",
-  //     "col2": 1
-  //  },
-  //  "op2": {
-  //     "type": "BASE",
-  //     "op": "=",
-  //     "col1": "*A",
-  //     "col2": "Bob"
-  //  }
-  // })
-  // const out4 = WHERE2(table, op4)
-  // console.log(out4)
 
   // return DEFAULTS[SKIP_HEADER_COUNT]
   console.log(L_OP(">", "*B", 2))
