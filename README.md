@@ -1,11 +1,14 @@
 # Google Sheet Utils
+A very basic SQL like functionality in google sheet
 
-SQL like functionaliity in google sheet
+Supported functions:
 - LEFT_JOIN
 - SELECT
 - WHERE
 - ORDER_BY
 - GROUP_BY
+
+Note: By default, assumes that the first row in selection is a header row. It uses it to output the column names accordingly.
 
 # How to use
 1. You need just 1 file - `sheet-utils.combined.js` (from dist folder)
@@ -14,6 +17,13 @@ SQL like functionaliity in google sheet
 4. In Apps Script page
     - Click on "Editor" menu (on left). Create a new file and copy-paste the contents of `sheet-utils.combined.js`. Alternatively you could also upload the file using "+" button
 5. Now you can try out the functions in your google sheet cell e.g `=SELECT(WHERE(A1:C5, "*C > 25"), "A.My Name,C.My Age")`
+
+# demo google sheet
+[Sheet Utils Demo Sheet](https://docs.google.com/spreadsheets/d/12xaK4kUavxLsKTN-yimtWjsoAlZacLruIlQkzW4W7CU/edit#gid=0)
+
+- Make a copy and use it to play around
+- It contains 2 tables : students and schools
+- It also showcases a few demo queries showing how to use the functions
 
 # [dev] How to deploy (to a sheet)
 
