@@ -138,7 +138,11 @@ function invokeCustomOperator(op, x, y) {
 //            UTILS
 // - - - - - - - - - - - - - - - - - - - - -
 
+// *A -> 0, B -> 1, *C -> 2
 function parseColumnIntoIndex(column) {
+  if (column[0] == '*') {
+    column = column.slice(1)
+  }
   const index = column.trim().charCodeAt(0) - 'A'.charCodeAt(0)
   return index
 }
@@ -163,7 +167,7 @@ function parseSelectV2String(selectionV2Str, headerT) {
   const selectionStrList = selectionV2Str.split(',')
   const selList = selectionStrList.map((x) => {
     const tokens = x.trim().split('.')
-    const colName = tokens[0].toUpperCase().slice(1) // removing the asterisk
+    const colName = tokens[0].toUpperCase()
     const colIndex = parseColumnIntoIndex(colName)
     const providedName = tokens[1] || null
     const headerName = firstHeaderRow && firstHeaderRow[colIndex] || null
@@ -241,10 +245,10 @@ function getWorkingHeaderCount(inputHeaderCount){
 Assumption: for each row in table1 (e.g employee, pk=companyId)
 we'll use the first matching entry in table2(e.g company) for the pk specified (companyId) 
 
-e.g LEFT_JOIN(SheetA!A1:C3, "B", A2:C9, "A", 1)
+e.g LEFT_JOIN(SheetA!A1:C3, "*B", A2:C9, "*A", 1)
 
 OR use with SELECT
-=SELECT(LEFT_JOIN(Employees!A1:C5, "B", A1:C3, "A", 1), "*A,*C,*E")
+=SELECT(LEFT_JOIN(Employees!A1:C5, "*B", A1:C3, "*A", 1), "*A,*C,*E")
 */
 function LEFT_JOIN(table1, pk1ColName, table2, pk2ColName, _hCount) {
   const hCount = getWorkingHeaderCount(_hCount)
