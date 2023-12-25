@@ -41,13 +41,13 @@ Examples:
 ## ORDER_BY
 orders the table based on certain column(s) either ascending (ASC) or descending (DESC)
 
-e.g - students table containing 3 columns `Name, Location, Age` .We want to order students by decresing age, if same age sorted by name (ascending)
+e.g - students table containing 3 columns `Name, Location, Age`. We want to order students by decresing age, if same age sorted by name (ascending)
 
 - `SORT_BY(A1:C10, "*C DESC, *A ASC")`
 
 
 ## GROUP_BY
-group the table based on certain column(s), and calculate 2 aggregate functions. In future versions, it will support more.
+group the table based on certain column(s), and calculate upto 2 aggregate functions. In future versions, this limit will be removed
 
 Note: currently supported aggregate functions : `SUM`, `COUNT`. More to come in future versions.
 
@@ -118,6 +118,7 @@ Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=Pegg
     - [x] support TRUE/FALSE
     - [ ] suport function invocation in where e.g `IS_EVEN(x)`, `COMPARE(x, 'Mumbai')`
     - [ ] support named columns `*Age=33`
+    - [ ] support float numbers
 - [x] rename SELECT2, WHERE2 replacing the old ones
 - [x] write a nice read me
     [x] explain each function with examples
