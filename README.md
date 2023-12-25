@@ -10,6 +10,15 @@ Supported functions:
 
 Note: By default, assumes that the first row in selection is a header row. It uses it to output the column names accordingly.
 
+# How to use
+1. You need just 1 file - `sheet-utils.combined.js` (from dist folder)
+2. Go to your google sheet where you want to use this
+3. Open Menu: Extensions -> Apps Script
+4. In Apps Script page
+    - Click on "Editor" menu (on left). Create a new file and copy-paste the contents of `sheet-utils.combined.js`. Alternatively you could also upload the file using "+" button
+5. Now you can try out the functions in your google sheet cell e.g `=WHERE(A1:C5, "*C > 25")`
+
+# Function docs
 ## SELECT
 select columns from the input table. Optionally rename it.
 
@@ -47,21 +56,21 @@ e.g - students table containing 3 columns `Name, Location, Age`. We want to orde
 
 
 ## GROUP_BY
-group the table based on certain column(s), and calculate upto 2 aggregate functions. In future versions, this limit will be removed
+group the table based on certain column(s), and calculate upto 2 aggregate values. In future versions, this limit will be removed
 
 Note: currently supported aggregate functions : `SUM`, `COUNT`. More to come in future versions.
 
 e.g students table `Name, Location, Type, Points`. Group students by location+type and calculate number of students and total points in each group
 
-- `GROUP_BY(A1:C10, "*B,*C", "COUNT *A, SUM *D")`
+- `GROUP_BY(A1:D10, "*B,*C", "COUNT *A, SUM *D")`
 
 we can combine the SELECT function here to rename the output columns nicely
-- `SELECT(GROUP_BY(A1:C10, "*B,*C", "COUNT *A, SUM *D"), "*A, *B, *C.Total Students, *D.Total Points")`
+- `SELECT(GROUP_BY(A1:D10, "*B,*C", "COUNT *A, SUM *D"), "*A, *B, *C.Total Students, *D.Total Points")`
 
 ## LEFT_JOIN
 this is used to join 2 tables together based on a common column
 
-e.g Students table - name, school id, age. School table - school id, school name, location. We want to join the the two tables (based on school id) so that for each student we can see the school details
+e.g Students table - `name, school id, age`. School table - `school id, school name, location`. We want to join the the two tables (based on school id) so that for each student we can see the school details
 
 - `=LEFT_JOIN(<students>, "*B", <schools>, "*A")`
 
@@ -69,13 +78,6 @@ here `*B` is school id in students table, and "*A" is school id in school table.
 
 post this we can combine `SELECT` OR `WHERE` to further tune the output
 
-# How to use
-1. You need just 1 file - `sheet-utils.combined.js` (from dist folder)
-2. Go to your google sheet where you want to use this
-3. Open Menu: Extensions -> Apps Script
-4. In Apps Script page
-    - Click on "Editor" menu (on left). Create a new file and copy-paste the contents of `sheet-utils.combined.js`. Alternatively you could also upload the file using "+" button
-5. Now you can try out the functions in your google sheet cell e.g `=WHERE(A1:C5, "*C > 25")`
 
 # demo google sheet
 [Sheet Utils Demo Sheet](https://docs.google.com/spreadsheets/d/12xaK4kUavxLsKTN-yimtWjsoAlZacLruIlQkzW4W7CU/edit#gid=0)
