@@ -11,6 +11,8 @@ Supported functions:
 # Demo video
 [Demo video](https://youtu.be/AxDwPOe4Xwg)
 
+[![Watch the video](https://img.youtube.com/vi/AxDwPOe4Xwg/maxresdefault.jpg | width=100)](https://youtu.be/AxDwPOe4Xwg)
+
 
 # Demo google sheet
 [Sheet Utils Demo Sheet](https://docs.google.com/spreadsheets/d/12xaK4kUavxLsKTN-yimtWjsoAlZacLruIlQkzW4W7CU/edit#gid=0)
