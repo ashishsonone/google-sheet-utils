@@ -8,7 +8,16 @@ Supported functions:
 - GROUP_BY
 - LEFT_JOIN
 
+# Demo video
 [Demo video](https://youtu.be/AxDwPOe4Xwg)
+
+
+# Demo google sheet
+[Sheet Utils Demo Sheet](https://docs.google.com/spreadsheets/d/12xaK4kUavxLsKTN-yimtWjsoAlZacLruIlQkzW4W7CU/edit#gid=0)
+
+- Make a copy and use it to play around
+- It contains 2 tables : students and schools
+- It also showcases a few demo queries showing how to use the functions
 
 # How to use
 1. You need just 1 file - `sheet-utils.combined.js` (from dist folder)
@@ -79,14 +88,6 @@ e.g Students table - `name, school id, age`. School table - `school id, school n
 here `*B` is school id in students table, and "*A" is school id in school table.
 
 post this we can combine `SELECT` OR `WHERE` to further tune the output
-
-
-# demo google sheet
-[Sheet Utils Demo Sheet](https://docs.google.com/spreadsheets/d/12xaK4kUavxLsKTN-yimtWjsoAlZacLruIlQkzW4W7CU/edit#gid=0)
-
-- Make a copy and use it to play around
-- It contains 2 tables : students and schools
-- It also showcases a few demo queries showing how to use the functions
 
 # [dev] How to deploy (to a sheet)
 
