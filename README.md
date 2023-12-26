@@ -9,10 +9,9 @@ Supported functions:
 - LEFT_JOIN
 
 # Demo video
-[Demo video](https://youtu.be/AxDwPOe4Xwg)
+[Demo video Link](https://youtu.be/AxDwPOe4Xwg)
 
-[![Watch the video](https://img.youtube.com/vi/AxDwPOe4Xwg/maxresdefault.jpg)](https://youtu.be/AxDwPOe4Xwg)
-
+<a href="https://youtu.be/AxDwPOe4Xwg"><img src="https://img.youtube.com/vi/AxDwPOe4Xwg/maxresdefault.jpg" height=400></a>
 
 # Demo google sheet
 [Sheet Utils Demo Sheet](https://docs.google.com/spreadsheets/d/12xaK4kUavxLsKTN-yimtWjsoAlZacLruIlQkzW4W7CU/edit#gid=0)
