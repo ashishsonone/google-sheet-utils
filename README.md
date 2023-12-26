@@ -133,7 +133,7 @@ Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=Pegg
 - [ ] write function doc (for each exposed functions)
     - [ ] exposed functions - WHERE, SELECT, GROUP_BY, SORT_BY, LEFT_JOIN
     - [ ] and make others private
-- [ ] add limit clause
+- [ ] add LIMIT clause. or SAMPLE to randomly view some rows.
 - [ ] support named column in queries (taken from header row)
 - [ ] support basic function calls in SELECT e.g SELECT A > 2
 - [ ] support more aggregate functions (AVG, MIN, MAX, etc). Remove limit of max 2 aggregates.
