@@ -11,7 +11,7 @@ Supported functions:
 # Demo video
 [Demo video](https://youtu.be/AxDwPOe4Xwg)
 
-[![Watch the video](https://img.youtube.com/vi/AxDwPOe4Xwg/maxresdefault.jpg | width=100)](https://youtu.be/AxDwPOe4Xwg)
+[![Watch the video](https://img.youtube.com/vi/AxDwPOe4Xwg/maxresdefault.jpg)](https://youtu.be/AxDwPOe4Xwg)
 
 
 # Demo google sheet
