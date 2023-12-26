@@ -8,7 +8,7 @@ Supported functions:
 - GROUP_BY
 - LEFT_JOIN
 
-Note: By default, assumes that the first row in selection is a header row. It uses it to output the column names accordingly.
+[Demo video](https://youtu.be/AxDwPOe4Xwg)
 
 # How to use
 1. You need just 1 file - `sheet-utils.combined.js` (from dist folder)
@@ -21,6 +21,8 @@ Note: By default, assumes that the first row in selection is a header row. It us
 # Function docs
 ## SELECT
 select columns from the input table. Optionally rename it.
+
+Note: By default, assumes that the first row in selection is a header row. It uses it to output the column names accordingly.
 
 A is the first column, B second, and so on
 
@@ -135,3 +137,4 @@ Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=Pegg
 - [ ] support user defined custom functions in where, aggregate clauses
 - [ ] [not a priority] full sql dialect instead of separate invocation for select, group, where. e.g `SELECT A, B WHERE C > 100 ORDER BY A DESC`
 - [ ] Error handling. Proper information about what went wrong.
+- [x] Record a demo video and publish on youtube
