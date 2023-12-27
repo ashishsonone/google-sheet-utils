@@ -1030,6 +1030,21 @@ e.g LEFT_JOIN(SheetA!A1:C3, "*B", A2:C9, "*A", 1)
 OR use with SELECT
 =SELECT(LEFT_JOIN(Employees!A1:C5, "*B", A1:C3, "*A", 1), "*A,*C,*E")
 */
+
+/**
+ * LEFT_JOIN based on a column. Provided column of first table will be matched with pk of second table.
+ * 
+ * @param {A1:C10} table1 First table to join
+ * @param {"*B"} pk1ColName column from first table e.g "*B"
+ * @param {Sheets2!A1:D20} table2 Second table to join
+ * @param {"*C"} pk2ColName pk of the second table e.g "*C"
+ * @param {1} headerCount how many rows of headers in input table
+ * @return {Table} Output Table.
+ * @customfunction
+ * 
+ * e.g
+ * =LEFT_JOIN(<students>, "*B", <schools>, "*A")
+ */
 function LEFT_JOIN(table1, pk1ColName, table2, pk2ColName, _hCount) {
   const hCount = getWorkingHeaderCount(_hCount)
 
@@ -1057,35 +1072,16 @@ function LEFT_JOIN(table1, pk1ColName, table2, pk2ColName, _hCount) {
   return prependHeaders(outTable, comboHeaderTable)
 }
 
-/*
-=SELECT(E2:G6, "A, B")
-*/
-function _SELECT_OLD(table, selectionStr){
-  const outColumns = parseSelectionStr(selectionStr)
-
-  const outTable = []
-  for (const fullRow of table) {
-    const subRow = []
-    for (const k of outColumns){
-      subRow.push(fullRow[k])
-    }
-    outTable.push(subRow)
-  }
-
-  return outTable
-}
-
 /**
- * Select v2 with rename option
+ * Select with rename option =SELECT(C2:D24, "*A,*B.Count of Videos")
  * 
- * @param {Table} table Selection Range as input table.
- * @param {String} selectionV2Str e.g "A,B.Count of Videos"
- * @param {Integer} headerCount how many rows of headers in input table
+ * @param {C2:D24} table Selection Range as input table.
+ * @param {"*A,*B"} selectionString e.g "*A,*B.Count of Videos"
+ * @param {1} headerCount OPTIONAL how many rows of headers in input table
  * @return {Table} Output Table.
  * @customfunction
  * 
  * =SELECT(GROUP_BY(Sheet3!A1:Z100, "*H", "COUNT *A"), "*A,*B.Count Of Videos")
- * =SELECT(GROUP_BY(ORDER_BY(C2:D24, "*B DESC,*A DESC"), "*B", "COUNT *A"), "*A,*B.No of Brands")
  * =SELECT(C2:D24, "*A,*B.Count of Videos")
  *
  * // without headers available (headerCount=0)
@@ -1107,30 +1103,6 @@ function SELECT(table, selectionV2Str, headerCount) {
   const outHeaderRow = outColList.map((colInfo) => colInfo.name)
 
   return prependHeaders(outTable, [outHeaderRow])
-}
-
-/**
- * WHERE clause
- * 
- * @param {Table} table Selection Range as input table.
- * @param {String} op Operation supported : [=, <, >]
- * @param {String} col1 Column 1 e.g "*A" for column, "Apple" or 190 for literal values
- * @return {Table} col2 Column 2 same as col 1
- * @param {Integer} headerCount how many rows of headers in input table
- * @return {Table} Output Table.
- * @customfunction
- * 
- * e.g
- * =SELECT(WHERE(E2:H6, "<", "*D", 4, 1), "A,D")
- * =WHERE(E2:I6, "=", "*E", TRUE)
- */
-
-function _WHERE_OLD(table, op, col1, col2, headerCount) {
-  const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
-  const fData = dataT.filter((row) => {
-    return runOp(row, op, col1, col2)
-  })
-  return prependHeaders(fData, headerT)
 }
 
 // - - - - - - - - - - - - - - - - - - - - -
@@ -1175,9 +1147,19 @@ function L_OR(op1, op2){
   })
 }
 
-/* 
-= WHERE(<range>, "(*C = 'Delhi') AND (*D > 10)"))
-*/
+/**
+ * WHERE clause
+ * 
+ * @param {E2:H6} table Selection Range as input table.
+ * @param {"*A = 2 AND *B='Bob'"} opHumanString where expression e.g "*A = 'Bob'"
+ * @param {1} headerCount OPTIONAL how many rows of headers in input table
+ * @return {Table} Output Table.
+ * @customfunction
+ * 
+ * e.g
+ * =SELECT(WHERE(E2:H6, "*A = 2 AND *B='Bob'", "*A,*D"))
+ * =WHERE(E2:I6, "*E > 10")
+ */
 function WHERE(table, opHumanString, headerCount) {
   const opString = L_PARSE(opHumanString)
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
@@ -1219,6 +1201,20 @@ function runAggOp(aggOpString, rows){
   }
 }
 
+/**
+ * GROUP_BY clause
+ * 
+ * @param {A1:D10} table Selection Range as input table.
+ * @param {"*B,*C"} columnsStr which colums to group by e.g "*B, *C"
+ * @param {"COUNT 1"} agg1 first aggregate e.g "SUM 1"
+ * @param {"SUM *D"} agg2 second aggregate e.g "COUNT *B"
+ * @param {Integer} headerCount how many rows of headers in input table
+ * @return {Table} Output Table.
+ * @customfunction
+ * 
+ * e.g
+ * =GROUP_BY(A1:D10, "*B,*C", "COUNT *A", "SUM *D")
+ */
 function GROUP_BY(table, columnsStr, agg1, agg2, headerCount) {
   const columns = columnsStr.split(',')
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
@@ -1326,6 +1322,18 @@ function runOrderConditionList(row1, row2, orderConditionList) {
   return 0
 }
 
+/**
+ * ORDER_BY clause
+ * 
+ * @param {A1:C10} table Selection Range as input table.
+ * @param {"*C DESC, *A ASC"} orderClause order clause e.g "*C DESC, *A ASC"
+ * @param {1} headerCount OPTIONAL how many rows of headers in input table
+ * @return {Table} Output Table.
+ * @customfunction
+ * 
+ * e.g
+ * =ORDER_BY(A1:C10, "*C DESC, *A ASC")
+ */
 function ORDER_BY(table, orderClause, headerCount) {
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
   

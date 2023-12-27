@@ -64,7 +64,7 @@ orders the table based on certain column(s) either ascending (ASC) or descending
 
 e.g - students table containing 3 columns `Name, Location, Age`. We want to order students by decresing age, if same age sorted by name (ascending)
 
-- `SORT_BY(A1:C10, "*C DESC, *A ASC")`
+- `ORDER_BY(A1:C10, "*C DESC, *A ASC")`
 
 
 ## GROUP_BY
@@ -74,10 +74,10 @@ Note: currently supported aggregate functions : `SUM`, `COUNT`. More to come in 
 
 e.g students table `Name, Location, Type, Points`. Group students by location+type and calculate number of students and total points in each group
 
-- `GROUP_BY(A1:D10, "*B,*C", "COUNT *A, SUM *D")`
+- `GROUP_BY(A1:D10, "*B,*C", "COUNT *A", "SUM *D")`
 
 we can combine the SELECT function here to rename the output columns nicely
-- `SELECT(GROUP_BY(A1:D10, "*B,*C", "COUNT *A, SUM *D"), "*A, *B, *C.Total Students, *D.Total Points")`
+- `SELECT(GROUP_BY(A1:D10, "*B,*C", "COUNT *A", "SUM *D"), "*A, *B, *C.Total Students, *D.Total Points")`
 
 ## LEFT_JOIN
 this is used to join 2 tables together based on a common column
@@ -131,7 +131,7 @@ Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=Pegg
 - [x] add a demo google sheet
 - [ ] write this in typescript
 - [ ] write function doc (for each exposed functions)
-    - [ ] exposed functions - WHERE, SELECT, GROUP_BY, SORT_BY, LEFT_JOIN
+    - [x] exposed functions - WHERE, SELECT, GROUP_BY, SORT_BY, LEFT_JOIN
     - [ ] and make others private
 - [ ] add LIMIT clause. or SAMPLE to randomly view some rows.
 - [ ] support named column in queries (taken from header row)
