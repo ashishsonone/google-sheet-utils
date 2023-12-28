@@ -136,7 +136,7 @@ Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=Pegg
     - [ ] and make others private
 - [ ] add LIMIT clause. or SAMPLE to randomly view some rows.
 - [ ] support named column in queries (taken from header row)
-- [ ] support cell refence as values (in WHERE clause)
+- [x] support cell refence as values (in WHERE clause)
 - [ ] support basic function calls in SELECT e.g SELECT A > 2
 - [ ] support more aggregate functions (AVG, MIN, MAX, etc). Remove limit of max 2 aggregates.
 - [ ] support user defined custom functions in where, aggregate clauses
