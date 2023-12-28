@@ -123,8 +123,9 @@ Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=Pegg
     - [x] relax strict need of parenthesis in AND/OR where expressions e.g `(*A=2) AND (*B='X')`, this is also allowed `*A=2 AND B='X`
     - [x] support TRUE/FALSE
     - [ ] suport function invocation in where e.g `IS_EVEN(x)`, `COMPARE(x, 'Mumbai')`
-    - [ ] support named columns `*Age=33`
+    - [x] support named columns `*Age=33`
     - [ ] support float numbers
+    - [x] support cell refernece `#A10`
 - [x] rename SELECT2, WHERE2 replacing the old ones
 - [x] write a nice read me
     [x] explain each function with examples
@@ -135,6 +136,7 @@ Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=Pegg
     - [ ] and make others private
 - [ ] add LIMIT clause. or SAMPLE to randomly view some rows.
 - [ ] support named column in queries (taken from header row)
+- [ ] support cell refence as values (in WHERE clause)
 - [ ] support basic function calls in SELECT e.g SELECT A > 2
 - [ ] support more aggregate functions (AVG, MIN, MAX, etc). Remove limit of max 2 aggregates.
 - [ ] support user defined custom functions in where, aggregate clauses
