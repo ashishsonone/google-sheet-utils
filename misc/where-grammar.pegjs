@@ -20,6 +20,7 @@ UnitExp
   = Integer
   / Text
   / Column
+  / CellRef
   / Boolean
 
 Boolean
@@ -41,15 +42,22 @@ ComboOperator
   / "AND"
 
 Integer "integer"
-  = _ [0-9]+ { return parseInt(text(), 10); }
+  = [0-9]+ { return parseInt(text(), 10); }
+
 
 _ "whitespace"
   = [ \t\n\r]*
   
 Column
-  = "*" str:[A-Z]+ { return "*" + str.join("")}
+  = "*" str:Variable {return "*" + str}
+ 
+CellRef
+  = "#" str:Variable {return "#" + str}
 
 Text
-  = "'" str:[A-Za-z\s* ]+ "'" {
+  = "'" str:[A-Za-z0-9*#_ ]+ "'" {
   	return str.join('')
   }
+
+Variable
+  = str:[A-Za-z0-9*#_]+ {return str.join('')}
