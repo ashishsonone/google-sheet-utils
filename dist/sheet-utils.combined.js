@@ -175,16 +175,20 @@ PegParserLib = (function() {
        peg$c29 = peg$classExpectation([" ", "\t", "\n", "\r"], false, false),
        peg$c30 = "*",
        peg$c31 = peg$literalExpectation("*", false),
-       peg$c32 = /^[A-Z]/,
-       peg$c33 = peg$classExpectation([["A", "Z"]], false, false),
-       peg$c34 = function(str) { return "*" + str.join("")},
-       peg$c35 = "'",
-       peg$c36 = peg$literalExpectation("'", false),
-       peg$c37 = /^[A-Za-zs* ]/,
-       peg$c38 = peg$classExpectation([["A", "Z"], ["a", "z"], "s", "*", " "], false, false),
-       peg$c39 = function(str) {
+       peg$c32 = function(str) {return "*" + str},
+       peg$c33 = "#",
+       peg$c34 = peg$literalExpectation("#", false),
+       peg$c35 = function(str) {return "#" + str},
+       peg$c36 = "'",
+       peg$c37 = peg$literalExpectation("'", false),
+       peg$c38 = /^[A-Za-z0-9*#_ ]/,
+       peg$c39 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], "*", "#", "_", " "], false, false),
+       peg$c40 = function(str) {
              return str.join('')
          },
+       peg$c41 = /^[A-Za-z0-9*#_]/,
+       peg$c42 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], "*", "#", "_"], false, false),
+       peg$c43 = function(str) {return str.join('')},
 
        peg$currPos          = 0,
        peg$savedPos         = 0,
@@ -422,7 +426,10 @@ PegParserLib = (function() {
        if (s0 === peg$FAILED) {
          s0 = peg$parseColumn();
          if (s0 === peg$FAILED) {
-           s0 = peg$parseBoolean();
+           s0 = peg$parseCellRef();
+           if (s0 === peg$FAILED) {
+             s0 = peg$parseBoolean();
+           }
          }
        }
      }
@@ -562,46 +569,37 @@ PegParserLib = (function() {
    }
 
    function peg$parseInteger() {
-     var s0, s1, s2, s3;
+     var s0, s1, s2;
 
      peg$silentFails++;
      s0 = peg$currPos;
-     s1 = peg$parse_();
-     if (s1 !== peg$FAILED) {
-       s2 = [];
-       if (peg$c24.test(input.charAt(peg$currPos))) {
-         s3 = input.charAt(peg$currPos);
-         peg$currPos++;
-       } else {
-         s3 = peg$FAILED;
-         if (peg$silentFails === 0) { peg$fail(peg$c25); }
-       }
-       if (s3 !== peg$FAILED) {
-         while (s3 !== peg$FAILED) {
-           s2.push(s3);
-           if (peg$c24.test(input.charAt(peg$currPos))) {
-             s3 = input.charAt(peg$currPos);
-             peg$currPos++;
-           } else {
-             s3 = peg$FAILED;
-             if (peg$silentFails === 0) { peg$fail(peg$c25); }
-           }
+     s1 = [];
+     if (peg$c24.test(input.charAt(peg$currPos))) {
+       s2 = input.charAt(peg$currPos);
+       peg$currPos++;
+     } else {
+       s2 = peg$FAILED;
+       if (peg$silentFails === 0) { peg$fail(peg$c25); }
+     }
+     if (s2 !== peg$FAILED) {
+       while (s2 !== peg$FAILED) {
+         s1.push(s2);
+         if (peg$c24.test(input.charAt(peg$currPos))) {
+           s2 = input.charAt(peg$currPos);
+           peg$currPos++;
+         } else {
+           s2 = peg$FAILED;
+           if (peg$silentFails === 0) { peg$fail(peg$c25); }
          }
-       } else {
-         s2 = peg$FAILED;
-       }
-       if (s2 !== peg$FAILED) {
-         peg$savedPos = s0;
-         s1 = peg$c26();
-         s0 = s1;
-       } else {
-         peg$currPos = s0;
-         s0 = peg$FAILED;
        }
      } else {
-       peg$currPos = s0;
-       s0 = peg$FAILED;
+       s1 = peg$FAILED;
      }
+     if (s1 !== peg$FAILED) {
+       peg$savedPos = s0;
+       s1 = peg$c26();
+     }
+     s0 = s1;
      peg$silentFails--;
      if (s0 === peg$FAILED) {
        s1 = peg$FAILED;
@@ -643,7 +641,7 @@ PegParserLib = (function() {
    }
 
    function peg$parseColumn() {
-     var s0, s1, s2, s3;
+     var s0, s1, s2;
 
      s0 = peg$currPos;
      if (input.charCodeAt(peg$currPos) === 42) {
@@ -654,31 +652,39 @@ PegParserLib = (function() {
        if (peg$silentFails === 0) { peg$fail(peg$c31); }
      }
      if (s1 !== peg$FAILED) {
-       s2 = [];
-       if (peg$c32.test(input.charAt(peg$currPos))) {
-         s3 = input.charAt(peg$currPos);
-         peg$currPos++;
-       } else {
-         s3 = peg$FAILED;
-         if (peg$silentFails === 0) { peg$fail(peg$c33); }
-       }
-       if (s3 !== peg$FAILED) {
-         while (s3 !== peg$FAILED) {
-           s2.push(s3);
-           if (peg$c32.test(input.charAt(peg$currPos))) {
-             s3 = input.charAt(peg$currPos);
-             peg$currPos++;
-           } else {
-             s3 = peg$FAILED;
-             if (peg$silentFails === 0) { peg$fail(peg$c33); }
-           }
-         }
-       } else {
-         s2 = peg$FAILED;
-       }
+       s2 = peg$parseVariable();
        if (s2 !== peg$FAILED) {
          peg$savedPos = s0;
-         s1 = peg$c34(s2);
+         s1 = peg$c32(s2);
+         s0 = s1;
+       } else {
+         peg$currPos = s0;
+         s0 = peg$FAILED;
+       }
+     } else {
+       peg$currPos = s0;
+       s0 = peg$FAILED;
+     }
+
+     return s0;
+   }
+
+   function peg$parseCellRef() {
+     var s0, s1, s2;
+
+     s0 = peg$currPos;
+     if (input.charCodeAt(peg$currPos) === 35) {
+       s1 = peg$c33;
+       peg$currPos++;
+     } else {
+       s1 = peg$FAILED;
+       if (peg$silentFails === 0) { peg$fail(peg$c34); }
+     }
+     if (s1 !== peg$FAILED) {
+       s2 = peg$parseVariable();
+       if (s2 !== peg$FAILED) {
+         peg$savedPos = s0;
+         s1 = peg$c35(s2);
          s0 = s1;
        } else {
          peg$currPos = s0;
@@ -697,30 +703,30 @@ PegParserLib = (function() {
 
      s0 = peg$currPos;
      if (input.charCodeAt(peg$currPos) === 39) {
-       s1 = peg$c35;
+       s1 = peg$c36;
        peg$currPos++;
      } else {
        s1 = peg$FAILED;
-       if (peg$silentFails === 0) { peg$fail(peg$c36); }
+       if (peg$silentFails === 0) { peg$fail(peg$c37); }
      }
      if (s1 !== peg$FAILED) {
        s2 = [];
-       if (peg$c37.test(input.charAt(peg$currPos))) {
+       if (peg$c38.test(input.charAt(peg$currPos))) {
          s3 = input.charAt(peg$currPos);
          peg$currPos++;
        } else {
          s3 = peg$FAILED;
-         if (peg$silentFails === 0) { peg$fail(peg$c38); }
+         if (peg$silentFails === 0) { peg$fail(peg$c39); }
        }
        if (s3 !== peg$FAILED) {
          while (s3 !== peg$FAILED) {
            s2.push(s3);
-           if (peg$c37.test(input.charAt(peg$currPos))) {
+           if (peg$c38.test(input.charAt(peg$currPos))) {
              s3 = input.charAt(peg$currPos);
              peg$currPos++;
            } else {
              s3 = peg$FAILED;
-             if (peg$silentFails === 0) { peg$fail(peg$c38); }
+             if (peg$silentFails === 0) { peg$fail(peg$c39); }
            }
          }
        } else {
@@ -728,15 +734,15 @@ PegParserLib = (function() {
        }
        if (s2 !== peg$FAILED) {
          if (input.charCodeAt(peg$currPos) === 39) {
-           s3 = peg$c35;
+           s3 = peg$c36;
            peg$currPos++;
          } else {
            s3 = peg$FAILED;
-           if (peg$silentFails === 0) { peg$fail(peg$c36); }
+           if (peg$silentFails === 0) { peg$fail(peg$c37); }
          }
          if (s3 !== peg$FAILED) {
            peg$savedPos = s0;
-           s1 = peg$c39(s2);
+           s1 = peg$c40(s2);
            s0 = s1;
          } else {
            peg$currPos = s0;
@@ -750,6 +756,41 @@ PegParserLib = (function() {
        peg$currPos = s0;
        s0 = peg$FAILED;
      }
+
+     return s0;
+   }
+
+   function peg$parseVariable() {
+     var s0, s1, s2;
+
+     s0 = peg$currPos;
+     s1 = [];
+     if (peg$c41.test(input.charAt(peg$currPos))) {
+       s2 = input.charAt(peg$currPos);
+       peg$currPos++;
+     } else {
+       s2 = peg$FAILED;
+       if (peg$silentFails === 0) { peg$fail(peg$c42); }
+     }
+     if (s2 !== peg$FAILED) {
+       while (s2 !== peg$FAILED) {
+         s1.push(s2);
+         if (peg$c41.test(input.charAt(peg$currPos))) {
+           s2 = input.charAt(peg$currPos);
+           peg$currPos++;
+         } else {
+           s2 = peg$FAILED;
+           if (peg$silentFails === 0) { peg$fail(peg$c42); }
+         }
+       }
+     } else {
+       s1 = peg$FAILED;
+     }
+     if (s1 !== peg$FAILED) {
+       peg$savedPos = s0;
+       s1 = peg$c43(s1);
+     }
+     s0 = s1;
 
      return s0;
    }
@@ -1147,6 +1188,42 @@ function L_OR(op1, op2){
   })
 }
 
+// #A33
+function getCellRefValue(inputCellRef){
+  const cellRef = inputCellRef.slice(1) // remove the first char (#)
+  const value = SpreadsheetApp.getActiveSheet().getRange(cellRef).getValue();
+  return value
+}
+
+function replaceCellRefInBaseClause(baseTree) {
+  const col1 = baseTree.col1
+  if (typeof(col1) == typeof('')) {
+    if (col1[0] == '#') {
+      baseTree.col1 = getCellRefValue(col1)
+    }
+  }
+
+  const col2 = baseTree.col2
+  if (typeof(col2) == typeof('')) {
+    if (col2[0] == '#') {
+      baseTree.col2 = getCellRefValue(col2)
+    }
+  }
+}
+
+function replaceCellRefInWhereTree(whereTree) {
+  if (whereTree.type == 'AND' || whereTree.type == 'OR') {
+    replaceCellRefInWhereTree(whereTree.op1)
+    replaceCellRefInWhereTree(whereTree.op2)
+  }
+  else if (whereTree.type == 'BASE') {
+    replaceCellRefInBaseClause(whereTree)
+  }
+  else {
+    throw new Error(`Unsupported type ${whereTree.type}`)
+  }
+}
+
 /**
  * WHERE clause
  * 
@@ -1162,9 +1239,11 @@ function L_OR(op1, op2){
  */
 function WHERE(table, opHumanString, headerCount) {
   const opString = L_PARSE(opHumanString)
+  const opObject = JSON.parse(opString)
+  replaceCellRefInWhereTree(opObject) // in-place changes
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
   const fData = dataT.filter((row) => {
-    return runCompositeOp(JSON.parse(opString), row)
+    return runCompositeOp(opObject, row)
   })
   return prependHeaders(fData, headerT)
 }
@@ -1385,6 +1464,9 @@ function test() {
 
   const out5 = runOrderConditionList(table[1], table[2], orderConditionList)
   console.log(out5)
+
+  var cellA1 = SpreadsheetApp.getActiveSheet().getRange('A1').getValue();
+  console.log(JSON.stringify({x: cellA1}))
 
   return out3
 }

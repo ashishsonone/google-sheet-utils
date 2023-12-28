@@ -367,6 +367,42 @@ function L_OR(op1, op2){
   })
 }
 
+// #A33
+function getCellRefValue(inputCellRef){
+  const cellRef = inputCellRef.slice(1) // remove the first char (#)
+  const value = SpreadsheetApp.getActiveSheet().getRange(cellRef).getValue();
+  return value
+}
+
+function replaceCellRefInBaseClause(baseTree) {
+  const col1 = baseTree.col1
+  if (typeof(col1) == typeof('')) {
+    if (col1[0] == '#') {
+      baseTree.col1 = getCellRefValue(col1)
+    }
+  }
+
+  const col2 = baseTree.col2
+  if (typeof(col2) == typeof('')) {
+    if (col2[0] == '#') {
+      baseTree.col2 = getCellRefValue(col2)
+    }
+  }
+}
+
+function replaceCellRefInWhereTree(whereTree) {
+  if (whereTree.type == 'AND' || whereTree.type == 'OR') {
+    replaceCellRefInWhereTree(whereTree.op1)
+    replaceCellRefInWhereTree(whereTree.op2)
+  }
+  else if (whereTree.type == 'BASE') {
+    replaceCellRefInBaseClause(whereTree)
+  }
+  else {
+    throw new Error(`Unsupported type ${whereTree.type}`)
+  }
+}
+
 /**
  * WHERE clause
  * 
@@ -382,9 +418,11 @@ function L_OR(op1, op2){
  */
 function WHERE(table, opHumanString, headerCount) {
   const opString = L_PARSE(opHumanString)
+  const opObject = JSON.parse(opString)
+  replaceCellRefInWhereTree(opObject) // in-place changes
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
   const fData = dataT.filter((row) => {
-    return runCompositeOp(JSON.parse(opString), row)
+    return runCompositeOp(opObject, row)
   })
   return prependHeaders(fData, headerT)
 }
@@ -605,6 +643,9 @@ function test() {
 
   const out5 = runOrderConditionList(table[1], table[2], orderConditionList)
   console.log(out5)
+
+  var cellA1 = SpreadsheetApp.getActiveSheet().getRange('A1').getValue();
+  console.log(JSON.stringify({x: cellA1}))
 
   return out3
 }
