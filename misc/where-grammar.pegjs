@@ -4,6 +4,10 @@
 // *A = 'Bob'
 // *B = TRUE
 // 5 > 3 AND *B = 'Bob'
+// *C > 3.54
+// (*Backup_1 > 113 AND *B = 'BENGALURU') OR (*C=TRUE AND #AC33 > 10)
+
+
 
 Exp
   = head:SingleExp _ op:ComboOperator _ tail:Exp {
@@ -17,7 +21,8 @@ SingleExp
   / UnitExp
 
 UnitExp
-  = Integer
+  = Float
+  / Integer
   / Text
   / Column
   / CellRef
@@ -44,6 +49,8 @@ ComboOperator
 Integer "integer"
   = [0-9]+ { return parseInt(text(), 10); }
 
+Float
+  = x:Integer "." y:Integer { return parseFloat(x + "." + y); }
 
 _ "whitespace"
   = [ \t\n\r]*
