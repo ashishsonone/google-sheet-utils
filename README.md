@@ -124,7 +124,7 @@ Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=Pegg
     - [x] support TRUE/FALSE
     - [ ] suport function invocation in where e.g `IS_EVEN(x)`, `COMPARE(x, 'Mumbai')`
     - [x] support named columns `*Age=33`
-    - [ ] support float numbers
+    - [x] support float numbers
     - [x] support cell refernece `#A10`
 - [x] rename SELECT2, WHERE2 replacing the old ones
 - [x] write a nice read me
