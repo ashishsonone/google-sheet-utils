@@ -6,8 +6,9 @@
 // 5 > 3 AND *B = 'Bob'
 // *C > 3.54
 // (*Backup_1 > 113 AND *B = 'BENGALURU') OR (*C=TRUE AND #AC33 > 10)
-
-
+// matchGlob("%s%", *D)
+// $matchGlob('3', $abs(-33.3)) > 3
+// $matchGlob('3', 4.3) >= *Alpha
 
 Exp
   = head:SingleExp _ op:ComboOperator _ tail:Exp {
@@ -18,12 +19,12 @@ Exp
 SingleExp
   = "(" e:Exp ")" {return e}
   / BaseExp
-  / UnitExp
 
 UnitExp
   = Float
   / Integer
   / Text
+  / FunctionCall
   / Column
   / CellRef
   / Boolean
@@ -38,16 +39,18 @@ BaseExp
   }
 
 CompareOperator
-  = ">"
+  = ">="
+  / "<="
+  / ">"
   / "<"
   / "="
-  
+
 ComboOperator
   = "OR"
   / "AND"
 
 Integer "integer"
-  = [0-9]+ { return parseInt(text(), 10); }
+  = [-0-9]+ { return parseInt(text(), 10); }
 
 Float
   = x:Integer "." y:Integer { return parseFloat(x + "." + y); }
@@ -62,9 +65,22 @@ CellRef
   = "#" str:Variable {return "#" + str}
 
 Text
-  = "'" str:[A-Za-z0-9*#_ ]+ "'" {
+  = "'" str:[^']+ "'" {
   	return str.join('')
   }
 
 Variable
   = str:[A-Za-z0-9*#_]+ {return str.join('')}
+
+FunctionCall
+  = "$" fn:Variable "(" args:(_ UnitExp (_ "," _ UnitExp _)* )? ")" {
+    args = args || []
+    const outArgs = []
+    if (args[1]) outArgs.push(args[1])
+    if (args[2]) outArgs.push(...args[2].map((x) => x[3]))
+    return {
+      type: 'Function',
+      name: fn,
+      args: outArgs
+    }
+  }
