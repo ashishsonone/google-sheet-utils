@@ -53,11 +53,13 @@ Value can be either
 - integer number e.g `25` (float not yet supported in parser)
 - string value (in single quotes) e.g `'Mumbai'` or `'Bob'`
 - boolean value literals e.g `TRUE` `FALSE`
+- column name as per header row e.g `*Name` or `*Date of Birth` (case insensitive). Consider's first row in the selection to be header row.
 
 Examples:
 - `WHERE(A1:C10, "*A > 10")`
 - `WHERE(A1:C10, "*A = 'Mumbai' AND *C < 10)`
 - `WHERE(A1:C10, "*A = TRUE)`
+- `WHERE(A1:C5, "*Age < 30 OR *CompanyId='Y'")`
 
 ## ORDER_BY
 orders the table based on certain column(s) either ascending (ASC) or descending (DESC)
@@ -135,7 +137,12 @@ Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=Pegg
     - [x] exposed functions - WHERE, SELECT, GROUP_BY, SORT_BY, LEFT_JOIN
     - [ ] and make others private
 - [ ] add LIMIT clause. or SAMPLE to randomly view some rows.
-- [ ] support named column in queries (taken from header row)
+- [ ] support named column (inferred from first row i.e header row)
+    [x] WHERE - done
+    [ ] SELECT
+    [ ] GROUP_BY
+    [ ] SORT_BY
+    [ ] LEFT_JOIN
 - [x] support cell refence as values (in WHERE clause)
 - [ ] support basic function calls in SELECT e.g SELECT A > 2
 - [ ] support more aggregate functions (AVG, MIN, MAX, etc). Remove limit of max 2 aggregates.

@@ -1009,6 +1009,12 @@ function parseColumnIntoIndex(column) {
   return index
 }
 
+// 0 -> A, 2 -> C
+function parseColumnIndexIntoColumnCharacter(columnIndex){
+  const out = String.fromCharCode(65 + columnIndex)
+  return out
+}
+
 // A, B, D becomes => [0, 1, 3]
 function parseSelectionStr(selectionStr) {
   const outColumns = []
@@ -1265,6 +1271,56 @@ function replaceCellRefInWhereTree(whereTree) {
   }
 }
 
+
+// *Name -> *C
+function getColumnNameReplacement(inputCol, columnNameMap){
+  const columnName = inputCol.slice(1).toLowerCase().trim() // remove the first char (*) & normalize
+  if (columnNameMap[columnName]) {
+    return `*${columnNameMap[columnName]}`
+  }
+  return inputCol
+}
+
+function replaceColumnNameInBaseClause(baseTree, columnNameMap) {
+  const col1 = baseTree.col1
+  if (typeof(col1) == typeof('')) {
+    if (col1[0] == '*') {
+      baseTree.col1 = getColumnNameReplacement(col1, columnNameMap)
+    }
+  }
+
+  const col2 = baseTree.col2
+  if (typeof(col2) == typeof('')) {
+    if (col2[0] == '*') {
+      baseTree.col2 = getColumnNameReplacement(col2, columnNameMap)
+    }
+  }
+}
+
+
+function replaceColumnNameInWhereTree(whereTree, columnNameMap) {
+  if (whereTree.type == 'AND' || whereTree.type == 'OR') {
+    replaceColumnNameInWhereTree(whereTree.op1, columnNameMap)
+    replaceColumnNameInWhereTree(whereTree.op2, columnNameMap)
+  }
+  else if (whereTree.type == 'BASE') {
+    replaceColumnNameInBaseClause(whereTree, columnNameMap)
+  }
+  else {
+    throw new Error(`Unsupported type ${whereTree.type}`)
+  }
+}
+
+function buildColumnNameMap(headerRow){
+  const out = {}
+  for (let i in headerRow) {
+    const name = headerRow[i]
+    const canonicalName = name.trim().toLowerCase()
+    out[canonicalName] = parseColumnIndexIntoColumnCharacter(parseInt(i))
+  }
+  return out
+}
+
 /**
  * WHERE clause
  * 
@@ -1283,6 +1339,8 @@ function WHERE(table, opHumanString, headerCount) {
   const opObject = JSON.parse(opString)
   replaceCellRefInWhereTree(opObject) // in-place changes
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
+  const columnNameMap = buildColumnNameMap(headerT[0] || [])
+  replaceColumnNameInWhereTree(opObject, columnNameMap) // repalce *Name -> *C
   const fData = dataT.filter((row) => {
     return runCompositeOp(opObject, row)
   })
@@ -1512,3 +1570,20 @@ function test() {
   return out3
 }
 
+function localTest(){
+  const columnNameMap = buildColumnNameMap(['Name', 'Date of Birth'])
+  console.log(columnNameMap)
+
+  const whereTree = {
+    type: 'BASE',
+    col1: '*Name',
+    col2: 33
+  }
+  
+
+  replaceColumnNameInWhereTree(whereTree, columnNameMap)
+
+  console.log(whereTree)
+}
+
+localTest()
