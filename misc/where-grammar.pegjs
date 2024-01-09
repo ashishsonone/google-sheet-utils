@@ -13,6 +13,7 @@
 // <WHERE>(*Name = 'A') AND *C = 3
 // <WHERE>(*Name = 'A') AND (*C = 3) OR $f(*Name, *Age)
 // <SELECT>*C AS KuchBhi
+// <SELECT>*C, *'Date of Birth', $fun(3, *C, *'Name')
 
 Exp
  = "<WHERE>" x:WhereExp {
@@ -56,13 +57,13 @@ SingleExp
 UnitExp
   = x: Primitive { return {type: 'PRIMITIVE', value: x}}
   / FunctionCall
+  / CellRef
+  / Column
 
 Primitive
   = Float
   / Integer
   / Text
-  / Column
-  / CellRef
   / Boolean
 
 CompareExp
@@ -95,10 +96,10 @@ _ "whitespace"
   = [ \t\n\r]*
   
 Column
-  = "*" str:Variable {return "*" + str}
+  = "*" str:RenameString {return {type: 'COLUMN', value: str}}
  
 CellRef
-  = "#" str:Variable {return "#" + str}
+  = "#" str:Variable {return {type: 'CELLREF', value: str}}
 
 Text
   = "'" str:[^']+ "'" {
