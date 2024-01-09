@@ -361,48 +361,27 @@ function runCompositeOp(opObject, row) {
   throw new Error(`Invalid Composite Op Type ${x.type}`)
 }
 
-function L_OP(op, col1, col2){
-  return JSON.stringify({
-    type: 'BASE',
-    op, col1, col2
-  })
-}
 
-function L_AND(op1, op2){
-  return JSON.stringify({
-    type: 'AND',
-    op1: JSON.parse(op1),
-    op2: JSON.parse(op2)
-  })
-}
-
-function L_OR(op1, op2){
-  return JSON.stringify({
-    type: 'OR',
-    op1: JSON.parse(op1),
-    op2: JSON.parse(op2)
-  })
-}
-
-// #A33
-function getCellRefValue(inputCellRef){
-  const cellRef = inputCellRef.slice(1) // remove the first char (#)
+// A33
+function getCellRefValue(cellRef){
   const value = SpreadsheetApp.getActiveSheet().getRange(cellRef).getValue();
   return value
 }
 
 function replaceCellRefInBaseClause(baseTree) {
   const col1 = baseTree.col1
-  if (typeof(col1) == typeof('')) {
-    if (col1[0] == '#') {
-      baseTree.col1 = getCellRefValue(col1)
+  if (col1.type == 'CELLREF') {
+    baseTree.col1 = {
+      type: 'PRIMITIVE',
+      value: getCellRefValue(col1.value)
     }
   }
 
   const col2 = baseTree.col2
-  if (typeof(col2) == typeof('')) {
-    if (col2[0] == '#') {
-      baseTree.col2 = getCellRefValue(col2)
+  if (col2.type == 'CELLREF') {
+    baseTree.col2 = {
+      type: 'PRIMITIVE',
+      value: getCellRefValue(col2.value)
     }
   }
 }
@@ -412,7 +391,7 @@ function replaceCellRefInWhereTree(whereTree) {
     replaceCellRefInWhereTree(whereTree.op1)
     replaceCellRefInWhereTree(whereTree.op2)
   }
-  else if (whereTree.type == 'BASE') {
+  else if (whereTree.type == 'COMPARE') {
     replaceCellRefInBaseClause(whereTree)
   }
   else {
@@ -421,28 +400,24 @@ function replaceCellRefInWhereTree(whereTree) {
 }
 
 
-// *Name -> *C
+// 'Name' -> C or 'Name' (default)
 function getColumnNameReplacement(inputCol, columnNameMap){
-  const columnName = inputCol.slice(1).toLowerCase().trim() // remove the first char (*) & normalize
+  const columnName = inputCol.toLowerCase().trim() // remove the first char (*) & normalize
   if (columnNameMap[columnName]) {
-    return `*${columnNameMap[columnName]}`
+    return `${columnNameMap[columnName]}`
   }
   return inputCol
 }
 
 function replaceColumnNameInBaseClause(baseTree, columnNameMap) {
   const col1 = baseTree.col1
-  if (typeof(col1) == typeof('')) {
-    if (col1[0] == '*') {
-      baseTree.col1 = getColumnNameReplacement(col1, columnNameMap)
-    }
+  if (col1.type == 'COLUMN') {
+    col1.value = getColumnNameReplacement(col1.value, columnNameMap)
   }
 
   const col2 = baseTree.col2
-  if (typeof(col2) == typeof('')) {
-    if (col2[0] == '*') {
-      baseTree.col2 = getColumnNameReplacement(col2, columnNameMap)
-    }
+  if (col2.type == 'COLUMN') {
+    col2.value = getColumnNameReplacement(col2.value, columnNameMap)
   }
 }
 
@@ -452,7 +427,7 @@ function replaceColumnNameInWhereTree(whereTree, columnNameMap) {
     replaceColumnNameInWhereTree(whereTree.op1, columnNameMap)
     replaceColumnNameInWhereTree(whereTree.op2, columnNameMap)
   }
-  else if (whereTree.type == 'BASE') {
+  else if (whereTree.type == 'COMPARE') {
     replaceColumnNameInBaseClause(whereTree, columnNameMap)
   }
   else {
@@ -484,8 +459,8 @@ function buildColumnNameMap(headerRow){
  * =WHERE(E2:I6, "*E > 10")
  */
 function WHERE(table, opHumanString, headerCount) {
-  const opString = L_PARSE(opHumanString)
-  const opObject = JSON.parse(opString)
+  const opString = L_PARSE("<WHERE>"+opHumanString)
+  const opObject = JSON.parse(opString).value
   replaceCellRefInWhereTree(opObject) // in-place changes
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
   const columnNameMap = buildColumnNameMap(headerT[0] || [])

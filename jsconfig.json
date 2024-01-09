@@ -5,6 +5,7 @@
 
     "exclude": [
         "dist",
-        "test"
+        "test",
+        "temp"
     ]
 }
