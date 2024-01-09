@@ -409,16 +409,15 @@ function getColumnNameReplacement(inputCol, columnNameMap){
   return inputCol
 }
 
-function replaceColumnNameInBaseClause(baseTree, columnNameMap) {
-  const col1 = baseTree.col1
-  if (col1.type == 'COLUMN') {
-    col1.value = getColumnNameReplacement(col1.value, columnNameMap)
+function replaceColumnNameInColumnExpr(colExpr, columnNameMap) {
+  if (colExpr.type == 'COLUMN') {
+    colExpr.value = getColumnNameReplacement(colExpr.value, columnNameMap)
   }
+}
 
-  const col2 = baseTree.col2
-  if (col2.type == 'COLUMN') {
-    col2.value = getColumnNameReplacement(col2.value, columnNameMap)
-  }
+function replaceColumnNameInCompareClause(baseTree, columnNameMap) {
+  replaceColumnNameInColumnExpr(baseTree.col1, columnNameMap)
+  replaceColumnNameInColumnExpr(baseTree.col2, columnNameMap)
 }
 
 
@@ -428,7 +427,7 @@ function replaceColumnNameInWhereTree(whereTree, columnNameMap) {
     replaceColumnNameInWhereTree(whereTree.op2, columnNameMap)
   }
   else if (whereTree.type == 'COMPARE') {
-    replaceColumnNameInBaseClause(whereTree, columnNameMap)
+    replaceColumnNameInCompareClause(whereTree, columnNameMap)
   }
   else {
     throw new Error(`Unsupported type ${whereTree.type}`)
@@ -479,9 +478,13 @@ function WHERE(table, opHumanString, headerCount) {
 */
 
 // "sum *B" "count *D"
-function runAggOp(aggOpString, rows){
-  let [op, col] = aggOpString.split(" ")
+// {"type":"Function","name":"COUNT","args":[{"type":"PRIMITIVE","value":3}]}
+function runAggOp(aggOpFn, rows){
+  console.log(aggOpFn)
+  let op = aggOpFn.name
+  let col = aggOpFn.args[0] // take the first argument
   op = op.trim().toUpperCase()
+  console.log({op, col})
   if (op == 'SUM') {
     let total = 0
     for (let row of rows){
@@ -501,6 +504,8 @@ function runAggOp(aggOpString, rows){
     }
     return total
   }
+
+  throw new Error(`Agg Op ${op} not supported`)
 }
 
 /**
@@ -508,23 +513,36 @@ function runAggOp(aggOpString, rows){
  * 
  * @param {A1:D10} table Selection Range as input table.
  * @param {"*B,*C"} columnsStr which colums to group by e.g "*B, *C"
- * @param {"COUNT 1"} agg1 first aggregate e.g "SUM 1"
- * @param {"SUM *D"} agg2 second aggregate e.g "COUNT *B"
+ * @param {"$COUNT(1), $SUM(*D)"} aggExpr aggregate expression
  * @param {Integer} headerCount how many rows of headers in input table
  * @return {Table} Output Table.
  * @customfunction
  * 
  * e.g
- * =GROUP_BY(A1:D10, "*B,*C", "COUNT *A", "SUM *D")
+ * =GROUP_BY(A1:D10, "*B,*Name,1", "$COUNT(*A), $SUM(*D)")
  */
-function GROUP_BY(table, columnsStr, agg1, agg2, headerCount) {
-  const columns = columnsStr.split(',')
+function GROUP_BY(table, columnsStr, aggrExprStr, headerCount) {
+  const aggrExpr = JSON.parse(L_PARSE("<AGG>" + aggrExprStr))
+  const aggList = aggrExpr.value
+
+  const columnExpr = JSON.parse(L_PARSE("<GROUP_BY>" + columnsStr))
+  const columnList = columnExpr.value
+
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
+
+  // replace column name in columnList
+  const columnNameMap = buildColumnNameMap(headerT[0])
+  columnList.map((col) => replaceColumnNameInColumnExpr(col, columnNameMap))
+
+  // replace column name in aggList
+  aggList.map((aggFn) => {
+    aggFn.args.map((col) => replaceColumnNameInColumnExpr(col, columnNameMap))
+  })
 
   const groupByMap = {}
   for (let row of dataT) {
     const keyParts = []
-    for (let col of columns) {
+    for (let col of columnList) {
       const colVal = getFieldValue(row, col)
       keyParts.push(colVal)
     }
@@ -542,7 +560,7 @@ function GROUP_BY(table, columnsStr, agg1, agg2, headerCount) {
 
   const headerRow = headerT[0]
   const outHeaderRow = []
-  for (let col of columns) {
+  for (let col of columnList) {
     if (headerRow) {
       const hVal = getFieldValue(headerT[0], col)
       outHeaderRow.push(hVal)
@@ -551,7 +569,12 @@ function GROUP_BY(table, columnsStr, agg1, agg2, headerCount) {
       outHeaderRow.push(col)
     }
   }
-  outHeaderRow.push(agg1, agg2)
+
+  for (let aggFn of aggList) {
+    // const outAgg = runAggOp(aggFn, groupByMap[key].elements)
+    outHeaderRow.push(`${aggFn.name} ${aggFn.args[0].value}`)
+    // outRow.push(outAgg)
+  }
 
   const outTable = []
 
@@ -559,13 +582,9 @@ function GROUP_BY(table, columnsStr, agg1, agg2, headerCount) {
     const keyParts = groupByMap[key].keyParts
 
     const outRow = [...keyParts]
-    if (agg1) {
-      const outAgg = runAggOp(agg1, groupByMap[key].elements)
-      outRow.push(outAgg)
-    }
-
-    if (agg2) {
-      const outAgg = runAggOp(agg2, groupByMap[key].elements)
+    // 
+    for (let aggFn of aggList) {
+      const outAgg = runAggOp(aggFn, groupByMap[key].elements)
       outRow.push(outAgg)
     }
 

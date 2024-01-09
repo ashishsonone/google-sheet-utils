@@ -120,6 +120,13 @@ We're using https://pegjs.org/online to generate the parser code for where claus
 
 Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=PeggyJS.peggy-language) for syntax highlighting for .pegjs files
 
+# [dev] run test
+```bash
+# make changes to local-test.js
+# combine all files into a single test-ground.js and run it
+bash scripts/test-ground-gen.sh; node temp/test-ground.js
+```
+
 # TODO
 - [ ] grammar related features
     - [x] relax strict need of parenthesis in AND/OR where expressions e.g `(*A=2) AND (*B='X')`, this is also allowed `*A=2 AND B='X`
