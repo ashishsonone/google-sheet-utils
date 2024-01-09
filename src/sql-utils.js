@@ -22,11 +22,16 @@ function LIB(fname, ...args) {
 // - - - - - - - - - - - - - - - - - - - - -
 //            USER DEFAULTS
 // - - - - - - - - - - - - - - - - - - - - -
-
 const SKIP_HEADER_COUNT = 'SKIP_HEADER_COUNT'
 const CUSTOM_OPERATORS = 'CUSTOM_OPERATORS'
 
 const nonce = new Date().toISOString()
+
+ENABLE_DEBUG=true
+
+function DEBUG(...args){
+  if (ENABLE_DEBUG) console.log(...args)
+}
 
 function getNonce(){
   return nonce
@@ -195,13 +200,15 @@ const Operations = {
   '<=' : eval("(x, y) => {return x <= y}"),
 }
 
+// {type: 'COLUMN', value: 'A'}
+// {type: 'PRIMITIVE', value: 'A'}
 function getFieldValue(row, field) {
-  if (typeof(field) == typeof('')) {
-    if (field.startsWith('*')) {
-      const columnName = field.slice(1)
-      const fieldIndex = parseColumnIntoIndex(columnName)
-      return row[fieldIndex] 
-    }
+  if (field.type == 'PRIMITIVE') return field.value
+
+  if (field.type == 'COLUMN') {
+    const columnName = field.value
+    const fieldIndex = parseColumnIntoIndex(columnName)
+    return row[fieldIndex] 
   }
 
   return field
@@ -210,6 +217,8 @@ function getFieldValue(row, field) {
 function runOp(row, op, x, y) {
   const valX = getFieldValue(row, x)
   const valY = getFieldValue(row, y)
+
+  DEBUG(JSON.stringify({msg: `runOp`, op, valX, valY}))
   
   return Operations[op](valX, valY)
 }
@@ -339,7 +348,7 @@ function SELECT(table, selectionV2Str, headerCount) {
 
 function runCompositeOp(opObject, row) {
   const x = opObject
-  if (x.type == 'BASE') {
+  if (x.type == 'COMPARE') {
     return runOp(row, x.op, x.col1, x.col2)
   }
   if (x.type == 'OR') {
@@ -709,21 +718,3 @@ function test() {
 
   return out3
 }
-
-function localTest(){
-  const columnNameMap = buildColumnNameMap(['Name', 'Date of Birth'])
-  console.log(columnNameMap)
-
-  const whereTree = {
-    type: 'BASE',
-    col1: '*Name',
-    col2: 33
-  }
-  
-
-  replaceColumnNameInWhereTree(whereTree, columnNameMap)
-
-  console.log(whereTree)
-}
-
-localTest()
