@@ -9,33 +9,65 @@
 // matchGlob("%s%", *D)
 // $matchGlob('3', $abs(-33.3)) > 3
 // $matchGlob('3', 4.3) >= *Alpha
+// <SELECT>(*Name = 'A'), *C
+// <WHERE>(*Name = 'A') AND *C = 3
+// <WHERE>(*Name = 'A') AND (*C = 3) OR $f(*Name, *Age)
+// <SELECT>*C AS KuchBhi
 
 Exp
-  = head:SingleExp _ op:ComboOperator _ tail:Exp {
+ = "<WHERE>" x:WhereExp {
+ 	return {
+ 	  type: 'WHERE',
+      value: x
+     }
+    }
+  / "<SELECT>" first:SelectExp rest:(_ "," _ SelectExp _)* {
+  	  const outArgs = [first]
+      if (rest) outArgs.push(...rest.map((x) => x[3]))
+  	  return {
+        	type: 'SELECT',
+            value: outArgs
+        }
+  }
+
+
+SelectExp
+  = x:SingleExp y:(_ "AS" _ RenameString )? {
+  	 const out = {exp: x}
+     if (y) out.rename = y[3]
+     return out
+  }
+
+RenameString
+  = Text
+  / Variable
+
+WhereExp
+  = head:SingleExp _ op:ComboOperator _ tail:WhereExp {
   	return {type: op, op1: head, op2: tail}
   }
   / SingleExp
 
 SingleExp
-  = "(" e:Exp ")" {return e}
-  / BaseExp
+  = "(" e:WhereExp ")" {return e}
+  / CompareExp
+  / UnitExp
 
 UnitExp
+  = x: Primitive { return {type: 'PRIMITIVE', value: x}}
+  / FunctionCall
+
+Primitive
   = Float
   / Integer
   / Text
-  / FunctionCall
   / Column
   / CellRef
   / Boolean
 
-Boolean
-  = "TRUE" { return true}
-  / "FALSE" { return false}
-
-BaseExp
+CompareExp
   = head:UnitExp _ op:CompareOperator _ tail:UnitExp {
-  	return {type: 'BASE', op, col1: head, col2: tail}
+  	return {type: 'COMPARE', op, col1: head, col2: tail}
   }
 
 CompareOperator
@@ -54,6 +86,10 @@ Integer "integer"
 
 Float
   = x:Integer "." y:Integer { return parseFloat(x + "." + y); }
+
+Boolean
+  = "TRUE" { return true}
+  / "FALSE" { return false}
 
 _ "whitespace"
   = [ \t\n\r]*
