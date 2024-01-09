@@ -155,3 +155,7 @@ Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=Pegg
     [ ] e.g `<WHERE> *C = 3 AND *Name='Bob'`
     [ ] e.g `<GROUP_BY> *Name, *C`, `<AGG> SUM(*C), COUNT(1)`
     [ ] e.g `<SORT_BY> *Name ASC, *C DESC`
+- [ ] Grammar - Remove ambiguity from string being treated as text, cell ref and column name. Identify and parse them separately
+    [ ] e.g all columns as `*Name,*'Date of Birth'` (note that asterisk is followed by a proper text in single quotes)
+    [ ] all cell ref as `#C44`
+    [ ] text as simply `'Date of Birth'` (in single quotes)
