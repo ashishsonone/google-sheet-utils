@@ -14,6 +14,8 @@
 // <WHERE>(*Name = 'A') AND (*C = 3) OR $f(*Name, *Age)
 // <SELECT>*C AS KuchBhi
 // <SELECT>*C, *'Date of Birth', $fun(3, *C, *'Name')
+// <SELECT>*'Date of Birth' AS 'Kuch naya date', #C3
+// <WHERE>*'Date of Birth' = 'Kuch naya date' AND #C3 > 3
 
 Exp
  = "<WHERE>" x:WhereExp {
