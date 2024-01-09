@@ -16,6 +16,8 @@
 // <SELECT>*C, *'Date of Birth', $fun(3, *C, *'Name')
 // <SELECT>*'Date of Birth' AS 'Kuch naya date', #C3
 // <WHERE>*'Date of Birth' = 'Kuch naya date' AND #C3 > 3
+// <AGG>$SUM(*D),$COUNT(3)
+// <GROUP_BY>*A,*Name
 
 Exp
  = "<WHERE>" x:WhereExp {
@@ -25,6 +27,14 @@ Exp
      }
     }
   / "<SELECT>" first:SelectExp rest:(_ "," _ SelectExp _)* {
+  	  const outArgs = [first]
+      if (rest) outArgs.push(...rest.map((x) => x[3]))
+  	  return {
+        	type: 'SELECT',
+            value: outArgs
+        }
+  }
+  / "<AGG>" first:FunctionCall rest:(_ "," _ FunctionCall _)* {
   	  const outArgs = [first]
       if (rest) outArgs.push(...rest.map((x) => x[3]))
   	  return {
