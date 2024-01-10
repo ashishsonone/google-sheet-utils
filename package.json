@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "bash scripts/mocha-test.sh; mocha temp/mocha-ground.test.js;",
-    "parser" : "bash scripts/gen-sql-parser.sh;",
-    "local-test" : "bash scripts/test-ground.sh; node temp/test-ground.js",
-    "dist" : "bash scripts/gen-combined-dist-js.sh;"
+    "parser": "bash scripts/gen-sql-parser.sh;",
+    "local-test": "bash scripts/test-ground.sh; node temp/test-ground.js",
+    "dist": "bash scripts/gen-combined-dist-js.sh;"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "peggy": "^3.0.2"
   }
 }

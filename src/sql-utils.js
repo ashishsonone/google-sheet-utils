@@ -693,11 +693,6 @@ function ORDER_BY(table, orderClause, headerCount) {
 // - - - - - - - - - - - - - - - - - - - - -
 */
 
-function testPeg() {
-  console.log(PegParserLib.parse("('*B' > 1) OR ('*A' = 'Bob')"))
-}
-
-
 /**
  * Parse the where clause expression
  * 

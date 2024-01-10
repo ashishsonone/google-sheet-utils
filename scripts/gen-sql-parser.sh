@@ -1,9 +1,14 @@
 OUT=src/sql-parser.js
-INPUT=$HOME/Downloads/parser.js
+GRAMMAR=misc/where-grammar.pegjs
+INPUT=temp/parser.js
+
+npx peggy --format amd -o $INPUT $GRAMMAR
 
 rm $OUT
 
-echo "PegParserLib=" >> $OUT
-tail -n +4 $INPUT >> $OUT
+echo 'PegParserLibGen=(function() {' >> $OUT
+tail -n +5 $INPUT >> $OUT
+
+echo 'PegParserLib=PegParserLibGen()' >> $OUT
 
 echo "Exported $OUT"

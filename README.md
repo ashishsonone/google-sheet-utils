@@ -163,12 +163,11 @@ npm run test
 npm run local-test
 ```
 
-# [dev] generate sql-parser.js
+# [dev] generate sql-parser.js from grammar file
 ```bash
-# Download the parser.js from https://peggyjs.org/online.html for the grammar
-# Assuming it is in the Downloads folder, run
+# edit the grammar in misc/where-grammar.pegjs
 npm run parser
-# it will use ~/Downloads/parser.js to generate src/sql-parser.js
+# it will generate src/sql-parser.js
 ```
 
 # [dev] Setup Details

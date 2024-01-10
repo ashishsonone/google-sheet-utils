@@ -1,5 +1,4 @@
-PegParserLib=
-(function() {
+PegParserLibGen=(function() {
   "use strict";
 
 function peg$subclass(child, parent) {
@@ -1570,5 +1569,5 @@ function peg$parse(input, options) {
     SyntaxError: peg$SyntaxError,
     parse: peg$parse
   };
-})()
-;
+});
+PegParserLib=PegParserLibGen()
