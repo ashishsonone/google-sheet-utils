@@ -274,13 +274,13 @@ OR use with SELECT
  * @param {A1:C10} table1 First table to join
  * @param {"*B"} pk1ColName column from first table e.g "*B"
  * @param {Sheets2!A1:D20} table2 Second table to join
- * @param {"*C"} pk2ColName pk of the second table e.g "*C"
+ * @param {"*C"} pk2ColName pk of the second table e.g "*C" or "*'Student Name'"
  * @param {1} headerCount how many rows of headers in input table
  * @return {Table} Output Table.
  * @customfunction
  * 
  * e.g
- * =LEFT_JOIN(<students>, "*B", <schools>, "*A")
+ * =LEFT_JOIN(<students>, "*B", <schools>, "*'School ID'")
  */
 function LEFT_JOIN(table1, pk1ColName, table2, pk2ColName, _hCount) {
   const hCount = getWorkingHeaderCount(_hCount)
@@ -288,17 +288,25 @@ function LEFT_JOIN(table1, pk1ColName, table2, pk2ColName, _hCount) {
   const [header1T, data1T] = splitHeaders(table1, hCount)
   const [header2T, data2T] = splitHeaders(table2, hCount)
 
-  const pk1 = parseColumnIntoIndex(pk1ColName)
-  const pk2 = parseColumnIntoIndex(pk2ColName)
+  const pk1 = JSON.parse(L_PARSE("<GROUP_BY>" + pk1ColName)).value[0]
+  const pk2 = JSON.parse(L_PARSE("<GROUP_BY>" + pk2ColName)).value[0]
+
+  const columnNameMap1 = buildColumnNameMap(header1T[0] || [])
+  const columnNameMap2 = buildColumnNameMap(header2T[0] || [])
+  replaceColumnNameInColumnExpr(pk1, columnNameMap1)
+  replaceColumnNameInColumnExpr(pk2, columnNameMap2)
+
+  // const pk1 = parseColumnIntoIndex(pk1ColName)
+  // const pk2 = parseColumnIntoIndex(pk2ColName)
   const t2Map = {}
   for (const row of data2T) {
-    const k = row[pk2]
+    const k = getFieldValue(row, pk2)
     t2Map[k] = row
   }
 
   const outTable = []
   for (const row of data1T) {
-    const k = row[pk1]
+    const k = getFieldValue(row, pk1)
     const t2Match = t2Map[k] || []
 
     const fullRow = [...row, ...t2Match]

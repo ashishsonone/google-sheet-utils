@@ -10,6 +10,8 @@ function localTest(){
     // console.log(out)
 
     const table = [['name', 'age'], ['Alice',2], ['Bob',4], ['Alice', 10]]
+    const table2 = [['StudentName', 'city'], ['Alice','Bombay'], ['Bob','Delhi']]
+
     const out3 = WHERE(table, "*age < #C3") // L_OP(">", "*B", 2))
     // console.log(out3)
 
@@ -29,10 +31,13 @@ function localTest(){
     // console.log(out4)
 
     const orderTree = JSON.parse(L_PARSE("<ORDER_BY>*name DESC"))
-    console.log(JSON.stringify(orderTree))
+    // console.log(JSON.stringify(orderTree))
 
     const out5 = ORDER_BY(table, "*B ASC")
-    console.log(out5)
+    // console.log(out5)
+
+    const out6 = LEFT_JOIN(table, "*A", table2, "*StudentName")
+    console.log(out6)
 }
 
 localTest()
