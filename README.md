@@ -188,3 +188,4 @@ bash scripts/test-ground-gen.sh; node temp/test-ground.js
     [ ] e.g all columns as `*Name,*'Date of Birth'` (note that asterisk is followed by a proper text in single quotes)
     [ ] all cell ref as `#C44`
     [ ] text as simply `'Date of Birth'` (in single quotes)
+- [ ] Write test suite for basic scenarios
