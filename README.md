@@ -132,6 +132,14 @@ bash scripts/gen-combined-js.sh
 # outputs dist/sheet-utils.combined.js
 ```
 
+# [dev] Run test suite
+```bash
+# ensure that dev dependencies are installed from package.json
+# tests are written in test/mocha-test.js
+# run test using
+npm run test
+```
+
 # [dev] Setup Details
 - google sheet link : https://docs.google.com/spreadsheets/d/1JYZ40tL7mxzdNvgtToPZkWctg1lI5-TJIOuzvhaXdxo/edit#gid=0
 - script id : 1o2k7CgnuyaPD6nlp66C-NNsSd8XNbOvYIpAOZynMKaHpHd3A91UtTfud
