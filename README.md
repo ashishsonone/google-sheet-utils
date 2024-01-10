@@ -8,7 +8,10 @@ Supported functions:
 - GROUP_BY
 - LEFT_JOIN
 
-# Demo video (this might be old)
+# Demo video
+> [!WARNING]  
+> The commands used in the video might not reflect the latest api contract (as it's evolving rapidly). So, it's just for showing the capabilities. Will record and upload a new one soon.
+
 [Demo video Link](https://youtu.be/AxDwPOe4Xwg)
 
 <a href="https://youtu.be/AxDwPOe4Xwg"><img src="https://img.youtube.com/vi/AxDwPOe4Xwg/maxresdefault.jpg" height=400></a>
