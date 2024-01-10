@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "bash scripts/mocha-test.sh; mocha temp/mocha-ground.test.js;"
+    "test": "bash scripts/mocha-test.sh; mocha temp/mocha-ground.test.js;",
+    "parser" : "bash scripts/gen-sql-parser.sh;",
+    "local-test" : "bash scripts/test-ground.sh; node temp/test-ground.js",
+    "dist" : "bash scripts/gen-combined-dist-js.sh;"
   },
   "author": "",
   "license": "ISC",

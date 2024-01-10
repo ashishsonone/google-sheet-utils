@@ -128,7 +128,7 @@ post this we can combine `SELECT` OR `WHERE` to further tune the output
 # [dev] generate a single distributable js
 ```bash
 # run from root of the project
-bash scripts/gen-combined-js.sh
+npm run dist
 # outputs dist/sheet-utils.combined.js
 ```
 
@@ -138,6 +138,21 @@ bash scripts/gen-combined-js.sh
 # tests are written in test/mocha-test.js
 # run test using
 npm run test
+```
+
+# [dev] run local test (exploratory)
+```bash
+# make changes to local-test.js
+# combine all files into a single test-ground.js and run it
+npm run local-test
+```
+
+# [dev] generate sql-parser.js
+```bash
+# Download the parser.js from https://peggyjs.org/online.html for the grammar
+# Assuming it is in the Downloads folder, run
+npm run parser
+# it will use ~/Downloads/parser.js to generate src/sql-parser.js
 ```
 
 # [dev] Setup Details
@@ -150,12 +165,7 @@ We're using https://pegjs.org/online to generate the parser code for where claus
 
 Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=PeggyJS.peggy-language) for syntax highlighting for .pegjs files
 
-# [dev] run test
-```bash
-# make changes to local-test.js
-# combine all files into a single test-ground.js and run it
-bash scripts/test-ground-gen.sh; node temp/test-ground.js
-```
+
 
 # TODO
 - [ ] grammar related features

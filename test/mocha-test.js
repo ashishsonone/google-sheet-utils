@@ -23,6 +23,12 @@ describe('SELECT', function () {
         const output = SELECT(table, "*B AS StudentAge, *name AS 'My Name', *name")
         assert.deepEqual(output, [['StudentAge', 'My Name', 'name'], [2, 'Alice', 'Alice'], [4, 'Bob', 'Bob'], [10, 'Alice', 'Alice']])
     });
+
+    it('SELECT with primitive value', function () {
+        const table = [['name', 'age'], ['Alice',2], ['Bob',4], ['Alice', 10]]
+        const output = SELECT(table, "*B AS StudentAge, 1, 'Hello'")
+        assert.deepEqual(output, [['StudentAge', 1, 'Hello'], [2, 1, 'Hello'], [4, 1, 'Hello'], [10, 1, 'Hello']])
+    });
 });
 
 // describe('SELECT', function () {
