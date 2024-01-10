@@ -40,12 +40,22 @@ e.g select columns A & C
 `=SELECT(A1:C10, "*A,*C")`
 
 e.g same as before, but now rename column A to "My Name"
-`=SELECT(A1:C10, "*A.My Name, *C")`
+`=SELECT(A1:C10, "*A AS 'My Name', *C")`
 
-Note: As convention, column names are to be prefixed with asterisk(*) to differentiate b/w string value and column name.
+e.g you can also use name as per the header row instead of column letter
+`=SELECT(A1:C10, "*Name, *'Student Age' AS StudentAge")`
+Note: Column names are to be prefixed with asterisk(*)
+
+Note: if column name has spaces it should be in single quotes and asterisk should be outside before it e.g `'*Student Age'` is incorrect. `*'Student Age'` is correct
 
 ## WHERE
-supports 3 operators : less than (<), greater than (>), equal (=). 
+supported binary operators
+- less than (<)
+- greater than (>)
+- equal (=)
+- less than equal to (<=)
+- greater than equal to (>=)
+
 conditions can be combined using `AND`, `OR`
 
 Value can be either
@@ -53,42 +63,54 @@ Value can be either
 - integer number e.g `25` (float not yet supported in parser)
 - string value (in single quotes) e.g `'Mumbai'` or `'Bob'`
 - boolean value literals e.g `TRUE` `FALSE`
-- column name as per header row e.g `*Name` or `*Date of Birth` (case insensitive). Consider's first row in the selection to be header row.
+- column name as per header row e.g `*Name` or `*'Date of Birth'` (case insensitive). Consider's first row in the selection to be header row.
+- some value from current active excel sheet. syntax - `#C44` or `#A1` (prefixed with hash tag `#`)
 
 Examples:
 - `WHERE(A1:C10, "*A > 10")`
 - `WHERE(A1:C10, "*A = 'Mumbai' AND *C < 10)`
 - `WHERE(A1:C10, "*A = TRUE)`
 - `WHERE(A1:C5, "*Age < 30 OR *CompanyId='Y'")`
+- `WHERE(A1:C5, "(*Age < 30 OR *CompanyId='Y') AND *City='Delhi'")` combining AND and OR. Using parenthesis to group expressions.
+- `WHERE(A1:C5, "*Age > #F1")`. Assume cell F1 contained value 30. So, this effectively becomes *Age > 30. 
+Note: A drawback of using cell reference is that when you change value of cell F1 to say 33, it won't automatically recalculate the result because we have no way of knowing this. You'll need to manually change something in the formula to make it run again.
 
 ## ORDER_BY
-orders the table based on certain column(s) either ascending (ASC) or descending (DESC)
+orders the table based on certain column(s) either ascending (`ASC`) or descending (`DESC`)
 
 e.g - students table containing 3 columns `Name, Location, Age`. We want to order students by decresing age, if same age sorted by name (ascending)
 
-- `ORDER_BY(A1:C10, "*C DESC, *A ASC")`
+- `ORDER_BY(A1:C10, "*C DESC, *A ASC")` using column letters
+- `ORDER_BY(A1:C10, "*Age DESC, *Location ASC")` using header names
 
 
 ## GROUP_BY
-group the table based on certain column(s), and calculate upto 2 aggregate values. In future versions, this limit will be removed
+group the table based on certain column(s), and calculate aggregate values
 
 Note: currently supported aggregate functions : `SUM`, `COUNT`. More to come in future versions.
 
 e.g students table `Name, Location, Type, Points`. Group students by location+type and calculate number of students and total points in each group
 
-- `GROUP_BY(A1:D10, "*B,*C", "COUNT *A", "SUM *D")`
+- `GROUP_BY(A1:D10, "*B,*C", "$COUNT(*A), $SUM(*D)")`
+- `GROUP_BY(A1:D10, "*Location,*Type", "$COUNT(*Name), $SUM(*Points)")`
 
 we can combine the SELECT function here to rename the output columns nicely
-- `SELECT(GROUP_BY(A1:D10, "*B,*C", "COUNT *A", "SUM *D"), "*A, *B, *C.Total Students, *D.Total Points")`
+- `SELECT(GROUP_BY(A1:D10, "*Location,*Type", "COUNT(*Name)", "SUM(*Points)"), "*A, *B, *C AS 'Total Students', *D AS 'Total Points'")`
+
+Note: 
+- functions are prefixed with a dollar sign `$`
+- column names prefixed with `*` e.g `*A`, `*Name`, `*'Student Age'`
+- cell reference is prefixed with hash tag `#` e.g `#C34` or `#A5`
 
 ## LEFT_JOIN
 this is used to join 2 tables together based on a common column
 
-e.g Students table - `name, school id, age`. School table - `school id, school name, location`. We want to join the the two tables (based on school id) so that for each student we can see the school details
+e.g Students table - `name, school id, age`. School table - `id, school name, location`. We want to join the the two tables (based on school id) so that for each student we can see the school details
 
 - `=LEFT_JOIN(<students>, "*B", <schools>, "*A")`
+here `*B` is school id in students table, and "*A" is the id in school table.
 
-here `*B` is school id in students table, and "*A" is school id in school table.
+- `=LEFT_JOIN(<students>, "*'school id'", <schools>, "*id")`
 
 post this we can combine `SELECT` OR `WHERE` to further tune the output
 
@@ -157,12 +179,12 @@ bash scripts/test-ground-gen.sh; node temp/test-ground.js
 - [ ] [not a priority] full sql dialect instead of separate invocation for select, group, where. e.g `SELECT A, B WHERE C > 100 ORDER BY A DESC`
 - [ ] Error handling. Proper information about what went wrong.
 - [x] Record a demo video and publish on youtube
-- [ ] NEW create a grammar to parse multiple types of expressions identified by prefix
+- [x] NEW create a grammar to parse multiple types of expressions identified by prefix
     [ ] where, group by, order by, select
     [ ] e.g `<WHERE> *C = 3 AND *Name='Bob'`
     [ ] e.g `<GROUP_BY> *Name, *C`, `<AGG> SUM(*C), COUNT(1)`
-    [ ] e.g `<SORT_BY> *Name ASC, *C DESC`
-- [ ] Grammar - Remove ambiguity from string being treated as text, cell ref and column name. Identify and parse them separately
+    [ ] e.g `<ORDER_BY> *Name ASC, *C DESC`
+- [x] Grammar - Remove ambiguity from string being treated as text, cell ref and column name. Identify and parse them separately
     [ ] e.g all columns as `*Name,*'Date of Birth'` (note that asterisk is followed by a proper text in single quotes)
     [ ] all cell ref as `#C44`
     [ ] text as simply `'Date of Birth'` (in single quotes)
