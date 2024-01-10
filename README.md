@@ -8,7 +8,7 @@ Supported functions:
 - GROUP_BY
 - LEFT_JOIN
 
-# Demo video
+# Demo video (this might be old)
 [Demo video Link](https://youtu.be/AxDwPOe4Xwg)
 
 <a href="https://youtu.be/AxDwPOe4Xwg"><img src="https://img.youtube.com/vi/AxDwPOe4Xwg/maxresdefault.jpg" height=400></a>
@@ -66,11 +66,11 @@ conditions can be combined using `AND`, `OR`
 
 Value can be either
 - column name e.g `*A`
-- integer number e.g `25` (float not yet supported in parser)
+- Number e.g `25` (float or integer)
 - string value (in single quotes) e.g `'Mumbai'` or `'Bob'`
 - boolean value literals e.g `TRUE` `FALSE`
 - column name as per header row e.g `*Name` or `*'Date of Birth'` (case insensitive). Consider's first row in the selection to be header row.
-- some value from current active excel sheet. syntax - `#C44` or `#A1` (prefixed with hash tag `#`)
+- Cell Value from current active excel sheet. syntax - `#C44` or `#A1` (prefixed with hash tag `#`)
 
 Examples:
 - `WHERE(A1:C10, "*A > 10")`
@@ -107,6 +107,7 @@ e.g students table `Name, Location, Type, Points`. Group students by location+ty
 > [!TIP]  
 > we can combine the SELECT function here to rename the output columns nicely
 > - `SELECT(GROUP_BY(A1:D10, "*Location,*Type", "COUNT(*Name)", "SUM(*Points)"), "*A, *B, *C AS 'Total Students', *D AS 'Total Points'")`
+> This outputs table with - Location, Type, Total Students, Total Points
 
 
 > [!NOTE]
