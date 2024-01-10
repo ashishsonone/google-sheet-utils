@@ -1,17 +1,17 @@
 function localTest(){
     const columnNameMap = buildColumnNameMap(['Name', 'Date of Birth'])
-    console.log(columnNameMap)
+    // console.log(columnNameMap)
 
     const whereExpression = "<WHERE>(*B >= 'Blp')"
     const whereTree = JSON.parse(L_PARSE(whereExpression))
-    console.log(whereTree)
+    // console.log(whereTree)
 
     const out = runCompositeOp(whereTree.value, [34, 'Alpha'])
-    console.log(out)
+    // console.log(out)
 
     const table = [['name', 'age'], ['Alice',2], ['Bob',4], ['Alice', 10]]
     const out3 = WHERE(table, "*age < #C3") // L_OP(">", "*B", 2))
-    console.log(out3)
+    // console.log(out3)
 
     // replaceColumnNameInWhereTree(whereTree, columnNameMap)
 
@@ -19,8 +19,14 @@ function localTest(){
     // console.log(aggExpr)
     // console.log(runAggOp(aggExpr.value[0], table.slice(1)))
 
-    const x = GROUP_BY(table, "*name", "$SUM(*age)")
-    console.log(x)
+    // const x = GROUP_BY(table, "*name", "$SUM(*age)")
+    // console.log(x)
+
+    const selectTree = JSON.parse(L_PARSE("<SELECT>*name AS MyName"))
+    console.log(JSON.stringify(selectTree))
+
+    const out4 = SELECT(table, "*name AS 'My Name', *B")
+    console.log(out4)
 }
 
 localTest()

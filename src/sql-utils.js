@@ -313,7 +313,7 @@ function LEFT_JOIN(table1, pk1ColName, table2, pk2ColName, _hCount) {
  * Select with rename option =SELECT(C2:D24, "*A,*B.Count of Videos")
  * 
  * @param {C2:D24} table Selection Range as input table.
- * @param {"*A,*B"} selectionString e.g "*A,*B.Count of Videos"
+ * @param {"*A,*B AS Name"} selectionString e.g "*A,*B.Count of Videos"
  * @param {1} headerCount OPTIONAL how many rows of headers in input table
  * @return {Table} Output Table.
  * @customfunction
@@ -322,22 +322,31 @@ function LEFT_JOIN(table1, pk1ColName, table2, pk2ColName, _hCount) {
  * =SELECT(C2:D24, "*A,*B.Count of Videos")
  *
  * // without headers available (headerCount=0)
- * =SELECT(C3:D24, "*A,*B.Count of Videos", 0)
+ * =SELECT(C3:D24, "*A,*'Video Count' AS 'Count of Videos'", 0)
  */
 function SELECT(table, selectionV2Str, headerCount) {
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
 
-  const outColList = parseSelectV2String(selectionV2Str, headerT)
+  // {"type":"SELECT","value":[{"exp":{"type":"COLUMN","value":"name"},"rename":"MyName"}]}
+  const selectTree = JSON.parse(L_PARSE("<SELECT>" + selectionV2Str))
+  const columnNameMap = buildColumnNameMap(headerT[0] || [])
+  const columnList = selectTree.value
+  columnList.map((singleSelect) => replaceColumnNameInColumnExpr(singleSelect.exp, columnNameMap))
+
+  // const outColList = parseSelectV2String(selectionV2Str, headerT)
   const outTable = []
   for (const fullRow of dataT) {
     const subRow = []
-    for (const colInfo of outColList){
-      subRow.push(fullRow[colInfo.index])
+    for (const colInfo of columnList){
+      subRow.push(getFieldValue(fullRow, colInfo.exp))
     }
     outTable.push(subRow)
   }
 
-  const outHeaderRow = outColList.map((colInfo) => colInfo.name)
+  const outHeaderRow = columnList.map((colInfo) => {
+    const newName = colInfo.rename || getFieldValue(headerT[0], colInfo.exp)
+    return newName
+  })
 
   return prependHeaders(outTable, [outHeaderRow])
 }
