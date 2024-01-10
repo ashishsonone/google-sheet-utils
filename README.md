@@ -130,12 +130,12 @@ post this we can combine `SELECT` OR `WHERE` to further tune the output
 # [dev] How to deploy (to a sheet)
 
 ## one time prep
-- Make sure clasp cli is setup and logged in.
-- .clasp.json should contain the `scriptId` of the appscript project (associated with you google sheet)
+- Make sure [clasp cli](https://github.com/google/clasp) is setup and logged in.
+- `.clasp.json` should contain the `scriptId` of the appscript project (associated with your google sheet)
 
 ## evertime you make changes
 - Make changes to code in src/ directory
-- Check status which files will be pushed `clasp status`
+- Check status which files will be pushed `clasp status`. If it's showing some extra files, check & fix `.claspignore`
 - Push using `clasp push`
 
 # [dev] generate a single distributable js
