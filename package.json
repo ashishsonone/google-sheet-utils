@@ -7,7 +7,8 @@
     "test": "bash scripts/mocha-test.sh; mocha temp/mocha-ground.test.js;",
     "parser": "bash scripts/gen-sql-parser.sh;",
     "local-test": "bash scripts/test-ground.sh; node temp/test-ground.js",
-    "dist": "bash scripts/gen-combined-dist-js.sh;"
+    "dist": "bash scripts/gen-combined-dist-js.sh;",
+    "grammar-test": "npm run parser; bash scripts/grammar-ground.sh; node temp/grammar-ground.js"
   },
   "author": "",
   "license": "ISC",

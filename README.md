@@ -170,6 +170,16 @@ npm run parser
 # it will generate src/sql-parser.js
 ```
 
+# [dev] Test grammar rules locally
+```bash
+# edit misc/where-grammar.pegjs
+# edit test/grammar-test.js with new expression to parse
+# run following command
+npm run grammar-test
+```
+
+Alternatively, just use the interactive editor at [peggyjs](https://pegjs.org/online).
+
 # [dev] Setup Details
 - google sheet link : https://docs.google.com/spreadsheets/d/1JYZ40tL7mxzdNvgtToPZkWctg1lI5-TJIOuzvhaXdxo/edit#gid=0
 - script id : 1o2k7CgnuyaPD6nlp66C-NNsSd8XNbOvYIpAOZynMKaHpHd3A91UtTfud
