@@ -153,7 +153,7 @@ bash scripts/test-ground-gen.sh; node temp/test-ground.js
 - [ ] grammar related features
     - [x] relax strict need of parenthesis in AND/OR where expressions e.g `(*A=2) AND (*B='X')`, this is also allowed `*A=2 AND B='X`
     - [x] support TRUE/FALSE
-    - [ ] suport function invocation in where e.g `IS_EVEN(x)`, `COMPARE(x, 'Mumbai')`
+    - [x] suport function invocation in where e.g `IS_EVEN(x)`, `COMPARE(x, 'Mumbai')`
     - [x] support named columns `*Age=33`
     - [x] support float numbers
     - [x] support cell refernece `#A10`
@@ -162,16 +162,16 @@ bash scripts/test-ground-gen.sh; node temp/test-ground.js
     [x] explain each function with examples
 - [x] add a demo google sheet
 - [ ] write this in typescript
-- [ ] write function doc (for each exposed functions)
+- [x] write function doc (for each exposed functions)
     - [x] exposed functions - WHERE, SELECT, GROUP_BY, SORT_BY, LEFT_JOIN
-    - [ ] and make others private
+- [ ] Make others private
 - [ ] add LIMIT clause. or SAMPLE to randomly view some rows.
-- [ ] support named column (inferred from first row i.e header row)
+- [x] support named column (inferred from first row i.e header row)
     [x] WHERE - done
-    [ ] SELECT
-    [ ] GROUP_BY
-    [ ] SORT_BY
-    [ ] LEFT_JOIN
+    [x] SELECT
+    [x] GROUP_BY
+    [x] ORDER_BY
+    [x] LEFT_JOIN
 - [x] support cell refence as values (in WHERE clause)
 - [ ] support basic function calls in SELECT e.g SELECT A > 2
 - [ ] support more aggregate functions (AVG, MIN, MAX, etc). Remove limit of max 2 aggregates. Take a single string with multiple aggregate expressions
