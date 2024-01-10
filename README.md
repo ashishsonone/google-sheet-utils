@@ -32,21 +32,27 @@ Supported functions:
 ## SELECT
 select columns from the input table. Optionally rename it.
 
-Note: By default, assumes that the first row in selection is a header row. It uses it to output the column names accordingly.
+
+> [!NOTE]  
+> By default, assumes that the first row in selection is a header row. It uses it to output the column names accordingly.
 
 A is the first column, B second, and so on
 
 e.g select columns A & C
-`=SELECT(A1:C10, "*A,*C")`
+- `=SELECT(A1:C10, "*A,*C")`
 
 e.g same as before, but now rename column A to "My Name"
-`=SELECT(A1:C10, "*A AS 'My Name', *C")`
+- `=SELECT(A1:C10, "*A AS 'My Name', *C")`
 
 e.g you can also use name as per the header row instead of column letter
-`=SELECT(A1:C10, "*Name, *'Student Age' AS StudentAge")`
-Note: Column names are to be prefixed with asterisk(*)
+- `=SELECT(A1:C10, "*Name, *'Student Age' AS StudentAge")`
 
-Note: if column name has spaces it should be in single quotes and asterisk should be outside before it e.g `'*Student Age'` is incorrect. `*'Student Age'` is correct
+> [!NOTE]  
+> Column names are to be prefixed with asterisk(*)
+
+
+> [!NOTE]  
+> If column name has spaces it should be in single quotes and asterisk should be outside before it e.g `'*Student Age'` is incorrect. `*'Student Age'` is correct
 
 ## WHERE
 supported binary operators
@@ -73,7 +79,9 @@ Examples:
 - `WHERE(A1:C5, "*Age < 30 OR *CompanyId='Y'")`
 - `WHERE(A1:C5, "(*Age < 30 OR *CompanyId='Y') AND *City='Delhi'")` combining AND and OR. Using parenthesis to group expressions.
 - `WHERE(A1:C5, "*Age > #F1")`. Assume cell F1 contained value 30. So, this effectively becomes *Age > 30. 
-Note: A drawback of using cell reference is that when you change value of cell F1 to say 33, it won't automatically recalculate the result because we have no way of knowing this. You'll need to manually change something in the formula to make it run again.
+
+> [!NOTE]  
+> A drawback of using cell reference is that when you change value of cell F1 to say 33, it won't automatically recalculate the result because we have no way of knowing this. You'll need to manually change something in the formula to make it run again.
 
 ## ORDER_BY
 orders the table based on certain column(s) either ascending (`ASC`) or descending (`DESC`)
@@ -87,20 +95,24 @@ e.g - students table containing 3 columns `Name, Location, Age`. We want to orde
 ## GROUP_BY
 group the table based on certain column(s), and calculate aggregate values
 
-Note: currently supported aggregate functions : `SUM`, `COUNT`. More to come in future versions.
+> [!NOTE]  
+> Currently supported aggregate functions : `SUM`, `COUNT`. More to come in future versions.
+
 
 e.g students table `Name, Location, Type, Points`. Group students by location+type and calculate number of students and total points in each group
 
 - `GROUP_BY(A1:D10, "*B,*C", "$COUNT(*A), $SUM(*D)")`
 - `GROUP_BY(A1:D10, "*Location,*Type", "$COUNT(*Name), $SUM(*Points)")`
 
-we can combine the SELECT function here to rename the output columns nicely
-- `SELECT(GROUP_BY(A1:D10, "*Location,*Type", "COUNT(*Name)", "SUM(*Points)"), "*A, *B, *C AS 'Total Students', *D AS 'Total Points'")`
+> [!TIP]  
+> we can combine the SELECT function here to rename the output columns nicely
+> - `SELECT(GROUP_BY(A1:D10, "*Location,*Type", "COUNT(*Name)", "SUM(*Points)"), "*A, *B, *C AS 'Total Students', *D AS 'Total Points'")`
 
-Note: 
-- functions are prefixed with a dollar sign `$`
-- column names prefixed with `*` e.g `*A`, `*Name`, `*'Student Age'`
-- cell reference is prefixed with hash tag `#` e.g `#C34` or `#A5`
+
+> [!NOTE]
+> - functions are prefixed with a dollar sign `$`
+> - column names prefixed with `*` e.g `*A`, `*Name`, `*'Student Age'`
+> - cell reference is prefixed with hash tag `#` e.g `#C34` or `#A5`
 
 ## LEFT_JOIN
 this is used to join 2 tables together based on a common column
