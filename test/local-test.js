@@ -26,7 +26,13 @@ function localTest(){
     console.log(JSON.stringify(selectTree))
 
     const out4 = SELECT(table, "*name AS 'My Name', *B")
-    console.log(out4)
+    // console.log(out4)
+
+    const orderTree = JSON.parse(L_PARSE("<ORDER_BY>*name DESC"))
+    console.log(JSON.stringify(orderTree))
+
+    const out5 = ORDER_BY(table, "*B ASC")
+    console.log(out5)
 }
 
 localTest()

@@ -17,8 +17,8 @@
 // <SELECT>*'Date of Birth' AS 'Kuch naya date', #C3
 // <WHERE>*'Date of Birth' = 'Kuch naya date' AND #C3 > 3
 // <AGG>$SUM(*D),$COUNT(3)
-// <GROUP_BY>*A,*Name
-
+// <GROUP_BY>*A,*Name,1
+// <ORDER_BY>*B DESC, *Name ASC
 Exp
  = "<WHERE>" x:WhereExp {
  	return {
@@ -38,11 +38,35 @@ Exp
   	  const outArgs = [first]
       if (rest) outArgs.push(...rest.map((x) => x[3]))
   	  return {
-        	type: 'SELECT',
+        	type: 'AGG',
+            value: outArgs
+        }
+  }
+  / "<GROUP_BY>" first:GroupByArg rest:(_ "," _ GroupByArg _)* {
+  	  const outArgs = [first]
+      if (rest) outArgs.push(...rest.map((x) => x[3]))
+  	  return {
+        	type: 'GROUP_BY',
+            value: outArgs
+        }
+  }
+  / "<ORDER_BY>" first:OrderByExp rest:(_ "," _ OrderByExp _)* {
+  	  const outArgs = [first]
+      if (rest) outArgs.push(...rest.map((x) => x[3]))
+  	  return {
+        	type: 'ORDER_BY',
             value: outArgs
         }
   }
 
+OrderByExp
+  = col:Column _ order:OrderEnum {
+  	return {exp: col, order}
+  }
+
+OrderEnum
+   = "ASC"
+   / "DESC"
 
 SelectExp
   = x:SingleExp y:(_ "AS" _ RenameString )? {
@@ -50,6 +74,10 @@ SelectExp
      if (y) out.rename = y[3]
      return out
   }
+
+GroupByArg
+	= Column
+    / x:Primitive { return {type: 'PRIMITIVE', value: x}}
 
 RenameString
   = Text

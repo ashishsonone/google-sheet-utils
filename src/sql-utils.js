@@ -636,11 +636,11 @@ function normalComp(v1, v2){
 }
 
 function runOrderCondition(row1, row2, orderCondition) {
-  const v1 = getFieldValue(row1, orderCondition.col)
-  const v2 = getFieldValue(row2, orderCondition.col)
+  const v1 = getFieldValue(row1, orderCondition.exp)
+  const v2 = getFieldValue(row2, orderCondition.exp)
 
   const outAsc = normalComp(v1, v2)
-  return orderCondition.ord == 'ASC' ? outAsc : -outAsc
+  return orderCondition.order == 'ASC' ? outAsc : -outAsc
 }
 
 function runOrderConditionList(row1, row2, orderConditionList) {
@@ -662,12 +662,18 @@ function runOrderConditionList(row1, row2, orderConditionList) {
  * @customfunction
  * 
  * e.g
- * =ORDER_BY(A1:C10, "*C DESC, *A ASC")
+ * =ORDER_BY(A1:C10, "*C DESC, *Name ASC")
  */
 function ORDER_BY(table, orderClause, headerCount) {
   const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
-  
-  const orderConditionList = parseOrderClause(orderClause)
+
+  const columnNameMap = buildColumnNameMap(headerT[0] || [])
+
+  // {"type":"ORDER_BY","value":[{"exp":{"type":"COLUMN","value":"name"},"order":"DESC"}]}
+  const orderTree = JSON.parse(L_PARSE("<ORDER_BY>"+orderClause))
+  const orderConditionList = orderTree.value
+  orderConditionList.map((orderCond) => replaceColumnNameInColumnExpr(orderCond.exp, columnNameMap))
+
   dataT.sort((row1, row2) => runOrderConditionList(row1, row2, orderConditionList))
 
   return prependHeaders(dataT, headerT)
