@@ -27,7 +27,7 @@ const CUSTOM_OPERATORS = 'CUSTOM_OPERATORS'
 
 const nonce = new Date().toISOString()
 
-ENABLE_DEBUG=true
+ENABLE_DEBUG=false
 
 function DEBUG(...args){
   if (ENABLE_DEBUG) console.log(...args)

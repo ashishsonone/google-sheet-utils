@@ -12,8 +12,8 @@ function localTest(){
     const table = [['name', 'age'], ['Alice',2], ['Bob',4], ['Alice', 10]]
     const table2 = [['StudentName', 'city'], ['Alice','Bombay'], ['Bob','Delhi']]
 
-    const out3 = WHERE(table, "*age < #C3") // L_OP(">", "*B", 2))
-    // console.log(out3)
+    const out3 = WHERE(table, "*age < 3.3") // L_OP(">", "*B", 2))
+    console.log(out3)
 
     // replaceColumnNameInWhereTree(whereTree, columnNameMap)
 
