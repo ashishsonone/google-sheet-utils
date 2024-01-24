@@ -687,6 +687,37 @@ function ORDER_BY(table, orderClause, headerCount) {
   return prependHeaders(dataT, headerT)
 }
 
+/**
+ * LIMIT clause
+ * 
+ * @param {A1:C10} table Selection Range as input table.
+ * @param {3} count how many rows to return
+ * @return {Table} Output Table.
+ * @customfunction
+*/
+function LIMIT(table, count, headerCount) {
+  const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
+  
+  const outT = dataT.slice(0, count)
+  return prependHeaders(outT, headerT)
+}
+
+/**
+ * SAMPLE clause
+ * 
+ * @param {A1:C10} table Selection Range as input table.
+ * @param {3} count how many random rows you want
+ * @return {Table} Output Table.
+ * @customfunction
+*/
+function SAMPLE(table, count, headerCount) {
+  const [headerT, dataT] = splitHeaders(table, getWorkingHeaderCount(headerCount))
+  
+  let outT = [...dataT] // copy of array
+  outT = outT.sort(() => 0.5 - Math.random())
+  outT = outT.slice(0, count)
+  return prependHeaders(outT, headerT)
+}
 
 /* - - - - - - - - - - - - - - - - - - - - -
 //           L_PARSE where clause expression parser
@@ -704,8 +735,6 @@ function ORDER_BY(table, orderClause, headerCount) {
 function L_PARSE(expression) {
   return JSON.stringify(PegParserLib.parse(expression))
 }
-
-
 
 function test() {
   const table = [['name', 'age'], ['Alice',2], ['Bob',4]]

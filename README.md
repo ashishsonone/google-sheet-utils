@@ -217,7 +217,7 @@ Note: install [peggyjs](https://marketplace.visualstudio.com/items?itemName=Pegg
     [x] LEFT_JOIN
 - [x] support cell refence as values (in WHERE clause)
 - [ ] support basic function calls in SELECT e.g SELECT A > 2
-- [ ] support more aggregate functions (AVG, MIN, MAX, etc). Remove limit of max 2 aggregates. Take a single string with multiple aggregate expressions
+- [x] support more aggregate functions (AVG, MIN, MAX, etc). Remove limit of max 2 aggregates. Take a single string with multiple aggregate expressions
 - [ ] support user defined custom functions in where, aggregate clauses
 - [ ] [not a priority] full sql dialect instead of separate invocation for select, group, where. e.g `SELECT A, B WHERE C > 100 ORDER BY A DESC`
 - [ ] Error handling. Proper information about what went wrong.

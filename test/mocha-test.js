@@ -137,3 +137,29 @@ describe('LEFT_JOIN', function () {
         ])
     })
 })
+
+describe('LIMIT', function () {
+    it('LIMIT example', function () {
+        const students = [['name', 'age', 'school id'], ['Alice',21, 'S.1'], ['Bob',4, 'S.1'], ['Cathy', 10, 'S.2'], ['Darwin', 15, 'S.4']]
+
+        const output = LIMIT(students, 2)
+        assert.deepEqual(output, [
+            ['name', 'age', 'school id'],
+            ['Alice',21, 'S.1'],
+            ['Bob',4, 'S.1']
+        ])
+    })
+})
+
+describe('SAMPLE', function () {
+    it('SAMPLE example', function () {
+        const students = [['name', 'age', 'school id'], ['Alice',21, 'S.1'], ['Bob',4, 'S.1'], ['Cathy', 10, 'S.2'], ['Darwin', 15, 'S.4']]
+
+        const output = SAMPLE(students, 2)
+
+        assert.deepEqual(3, output.length)
+        for (const x of output.slice(1)) {
+            assert.deepEqual(true, students.indexOf(x) >= 0)
+        }
+    })
+})
