@@ -20,7 +20,7 @@
 // <GROUP_BY>*A,*Name,1
 // <ORDER_BY>*B DESC, *Name ASC
 Exp
- = "<WHERE>" x:WhereExp {
+  = "<WHERE>" x:WhereExp {
  	return {
  	  type: 'WHERE',
       value: x
