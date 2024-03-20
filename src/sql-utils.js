@@ -192,12 +192,21 @@ function parseSelectV2String(selectionV2Str, headerT) {
   return selList
 }
 
+
+function simpleVal(x) {
+  if (typeof(x) == typeof(new Date())) {
+    return Utilities.formatDate(x, 'Asia/Kolkata', "YYYY-MM-dd");
+  }
+  return x
+}
+
 const Operations = {
-  '=' : eval("(x, y) => {return x == y}"),
-  '>' : eval("(x, y) => {return x > y}"),
-  '<' : eval("(x, y) => {return x < y}"),
-  '>=' : eval("(x, y) => {return x >= y}"),
-  '<=' : eval("(x, y) => {return x <= y}"),
+  '=' : eval("(x, y) => {return simpleVal(x) == simpleVal(y)}"),
+  '>' : eval("(x, y) => {return simpleVal(x) > simpleVal(y)}"),
+  '<' : eval("(x, y) => {return simpleVal(x) < simpleVal(y)}"),
+  '>=' : eval("(x, y) => {return simpleVal(x) >= simpleVal(y)}"),
+  '<=' : eval("(x, y) => {return simpleVal(x) <= simpleVal(y)}"),
+  '!=' : eval("(x, y) => {return simpleVal(x) != simpleVal(y)}"),
 }
 
 // {type: 'COLUMN', value: 'A'}
@@ -428,6 +437,7 @@ function getColumnNameReplacement(inputCol, columnNameMap){
 
 function replaceColumnNameInColumnExpr(colExpr, columnNameMap) {
   if (colExpr.type == 'COLUMN') {
+    colExpr.oldValue = colExpr.value
     colExpr.value = getColumnNameReplacement(colExpr.value, columnNameMap)
   }
 }
@@ -588,8 +598,9 @@ function GROUP_BY(table, columnsStr, aggrExprStr, headerCount) {
   }
 
   for (let aggFn of aggList) {
+    const argValue = aggFn.args[0].oldValue || aggFn.args[0].value
     // const outAgg = runAggOp(aggFn, groupByMap[key].elements)
-    outHeaderRow.push(`${aggFn.name} ${aggFn.args[0].value}`)
+    outHeaderRow.push(`${aggFn.name} ${argValue}`)
     // outRow.push(outAgg)
   }
 

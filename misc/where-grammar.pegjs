@@ -117,6 +117,7 @@ CompareOperator
   / ">"
   / "<"
   / "="
+  / "!="
 
 ComboOperator
   = "OR"

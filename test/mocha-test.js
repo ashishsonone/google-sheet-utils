@@ -112,7 +112,7 @@ describe('GROUP_BY', function () {
     it('GROUP_BY single column, sum+count agg', function () {
         const table = [['name', 'age'], ['Alice',21], ['Bob',4], ['Alice', 10]]
         const output = GROUP_BY(table, "*name", "$SUM(*age), $COUNT(1)")
-        assert.deepEqual(output, [['name', 'SUM B', 'COUNT 1'], ['Alice',31, 2], ['Bob', 4, 1]])
+        assert.deepEqual(output, [['name', 'SUM age', 'COUNT 1'], ['Alice',31, 2], ['Bob', 4, 1]])
     })
 
     it('GROUP_BY multiple columns', function () {
